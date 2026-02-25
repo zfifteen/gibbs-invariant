@@ -1,0 +1,57 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install numpy matplotlib
+
+      - name: Compile check
+        run: python -m py_compile gibbs_invariant.py
+
+      - name: Headless invariant smoke test
+        env:
+          MPLBACKEND: Agg
+          MPLCONFIGDIR: /tmp/mplconfig
+          XDG_CACHE_HOME: /tmp/xdgcache
+        run: |
+          mkdir -p "$MPLCONFIGDIR" "$XDG_CACHE_HOME"
+          python - <<'PY'
+          import numpy as np
+          import gibbs_invariant as gi
+
+          # Theorem 2: radius doubling increment should converge near exact constant.
+          radii = gi.square_wave_radii(2000)
+          deltas = gi.radius_doubling_deltas(radii)
+          assert deltas, "No doubling deltas produced"
+          assert abs(deltas[-1] - gi.GIBBS_RADIUS_DELTA) < 2e-3, (deltas[-1], gi.GIBBS_RADIUS_DELTA)
+
+          # Theorem 1: pointwise Gibbs error fraction should converge near constant.
+          ov = gi.gibbs_overshoot(1000)
+          frac = (ov - 1.0) / 2.0
+          assert abs(frac - gi.GIBBS_OVERSHOOT_FRACTION_JUMP) < 2e-3, (frac, gi.GIBBS_OVERSHOOT_FRACTION_JUMP)
+
+          # Theorem 1 crossover definition used in docs and code.
+          crossover = gi.estimate_crossover_harmonic(max_N=120)
+          assert crossover == 26, crossover
+
+          # Energy concentration should stay in the expected band near 0.89.
+          x = np.linspace(-np.pi, np.pi, 65536, endpoint=False)
+          ez = gi.energy_concentration_fraction(200, x)
+          assert 0.86 <= ez <= 0.93, ez
+          PY

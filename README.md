@@ -139,6 +139,30 @@ python3 gibbs_invariant.py
 
 ---
 
+## Reproducibility
+
+Environment:
+
+- Python `3.9+`
+- `numpy`, `matplotlib`
+
+Run:
+
+```bash
+python3 gibbs_invariant.py
+```
+
+Expected verification markers in console output:
+
+- `Theorem 2 delta-per-doubling target: 0.441271200305`
+- `Theorem 1 overshoot target (plateau=1): 1.178979744472`
+- `Theorem 1 pointwise error as jump fraction: 0.089489872236`
+- `Estimated crossover N where pointwise Gibbs error > global RMS error: 26`
+
+The exact table values may vary at the last displayed digit by platform/BLAS implementation, but the constants and crossover should remain stable.
+
+---
+
 ## Repository Contents
 
 | Document | Description |
