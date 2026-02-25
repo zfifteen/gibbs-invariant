@@ -63,23 +63,20 @@ The mechanism behind both: at a discontinuity, every missing harmonic is **in ph
 
 ## Repository Contents
 
-```
-docs/
-├── theorem_1_energy_invariant.md          ← Start here: Theorem 1 statement
-├── theorem_1_technical_exposition.md      ← Full derivation and analysis
-├── theorem_2_radius_invariant.md          ← Theorem 2 statement
-├── theorem_2_technical_exposition.md      ← Full derivation and analysis
-└── industry/
-    └── gibbs_industrial_implications.md   ← Cross-domain engineering implications
-```
-
-### Suggested Reading Order
-
-1. **`theorem_1_energy_invariant.md`** — The energy concentration result. Start with the theorem statement before the machinery.
-2. **`theorem_2_radius_invariant.md`** — The radius budget result. Two pages, self-contained.
-3. **`theorem_1_technical_exposition.md`** — Full derivation: harmonic energy accounting, phase-coherence mechanism, crossover interpretation, falsification criteria.
-4. **`theorem_2_technical_exposition.md`** — Square-wave asymptotics, the (2/π)ln(2) derivation, contrast cases, decision rule.
-5. **`industry/gibbs_industrial_implications.md`** — Eight domains, two invariants, one unified framework.
+| Document | Description |
+|---|---|
+| [Repository Overview](README.md) | Top-level overview of the two Gibbs invariants, why they matter, and how to navigate the repository. |
+| [Theorem 1: Energy Concentration Invariant](docs/theorem_1_energy_invariant.md) | Theorem 1 statement and implications for energy concentration of Fourier truncation error near discontinuities. |
+| [Theorem 1 Technical Exposition](docs/theorem_1_technical_exposition.md) | Full technical derivation and analysis of Theorem 1, including mechanism and falsification criteria. |
+| [Theorem 2: Radius Budget Invariant](docs/theorem_2_radius_invariant.md) | Theorem 2 statement and decision rule based on persistent per-doubling radius budget growth. |
+| [Theorem 2 Technical Exposition](docs/theorem_2_technical_exposition.md) | Full technical derivation and asymptotics for the radius-budget invariant in epicycle/Fourier form. |
+| [Industry Applications Whitepaper](docs/industry/industry_applications.md) | Industry-focused whitepaper on practical use of the persistent circle-length budget across engineering domains. |
+| [Theorem Applicability Comparison](docs/industry/theorem_applicability_comparison.md) | Comparison of when to use Theorem 1 versus Theorem 2 for analysis and system design decisions. |
+| [Theorem Role Summary](docs/industry/theorem_role_summary.md) | Short role summary: Theorem 2 for edge detection/regime switching, Theorem 1 for resolution/error budgeting. |
+| [GitHub Candidate Software List](docs/industry/github_candidate_software_list.md) | Curated list of GitHub software candidates for implementing and testing invariant-driven ideas. |
+| [Industrial Implications Report (DOCX)](docs/industry/gibbs_industrial_implications.docx) | Editable DOCX version of the industrial implications report. |
+| [Industrial Implications Report (Markdown)](docs/industry/gibbs_industrial_implications.docx.md) | Markdown-exported version of the industrial implications report for review and version control. |
+| [Industrial Implications Report (PDF)](docs/industry/gibbs_industrial_implications.docx.pdf) | PDF export of the industrial implications report for distribution and presentation. |
 
 ---
 
