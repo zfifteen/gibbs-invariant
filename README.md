@@ -2,27 +2,27 @@
 
 # The Gibbs Invariant
 
-> *Everyone knows the Gibbs phenomenon produces a persistent overshoot near discontinuities. Far fewer know that this overshoot is the visible tip of a deeper structure — one with quantifiable, scale-invariant properties that have concrete engineering consequences.*
+> Two computable invariants for Fourier approximations of discontinuous signals: an energy-concentration law and a radius-budget law.
 
 ---
 
 ## What This Is
 
-This repository develops two linked theorems that reframe the Gibbs phenomenon: not as a local amplitude artifact, but as a **global structural property** of Fourier representations applied to piecewise-smooth signals.
+This repository presents two linked theorems for piecewise-smooth periodic signals with jump discontinuities.
 
-The short version:
+In short:
 
-**Theorem 1 — The Gibbs Energy Invariant:** When you truncate a Fourier series, ~89% of all remaining squared error locks permanently into vanishingly narrow zones around each discontinuity. This fraction doesn't decay as you add harmonics. It is scale-invariant from N=10 to N=10,000. And it defines a computable crossover N₁ beyond which adding more global harmonics delivers less than 11% of remaining error reduction to the 90%+ of the domain that is actually smooth.
+**Theorem 1 — Gibbs Energy Invariant:** For Fourier truncation order `N`, approximately 89% of the remaining L² error concentrates in shrinking neighborhoods around discontinuities (zone width proportional to `1/N`). This concentration fraction is approximately invariant across increasing `N`. A computable crossover `N₁` marks where pointwise Gibbs error (as a fraction of jump height) exceeds global RMS error.
 
-**Theorem 2 — The Gibbs Radius Invariant:** In the equivalent epicycle representation, a signal with true jump discontinuities requires a radius budget that grows without bound — adding exactly **(2/π)ln(2) ≈ 0.4413** units per doubling of circles, forever, regardless of how many circles are already employed. Smooth signals converge to a finite budget. The threshold is closed-form and exact, not empirical.
+**Theorem 2 — Gibbs Radius Invariant:** In epicycle/Fourier-coefficient form, signals with true jumps require a cumulative radius budget that grows as `R(N) ~ (2/pi) ln(N) + C`. Under doubling, the increment converges to the closed-form constant `ΔR -> (2/pi) ln(2) ≈ 0.4413`. Continuous controls (for example triangle wave) have saturating budget and vanishing doubling increment.
 
 ---
 
-## Why It Matters
+## Practical Implications
 
-The Gibbs phenomenon has been known since 1899. What hasn't been stated cleanly until now is the **structural consequence**: there is a computable point N₁ beyond which globally-optimal Fourier methods become locally catastrophic, and the rational engineering response is always the same — make discontinuities explicit in the representation rather than leaving them implicit.
+These invariants provide two quantitative diagnostics for deciding when global spectral refinement stops being efficient and discontinuity-aware treatment is warranted.
 
-Every field that uses spectral methods on real-world signals has independently rediscovered this principle as a heuristic:
+Common engineering heuristics can be interpreted through this lens:
 
 | Domain | The Heuristic Workaround |
 |---|---|
@@ -33,9 +33,7 @@ Every field that uses spectral methods on real-world signals has independently r
 | Machine learning | Perceptual loss functions (VGG, SSIM) |
 | Control systems | Event-triggered and feedforward control |
 
-These are all partial, independent rediscoveries of the same principle — applied without the theoretical justification that explains *why* they work, and therefore calibrated empirically rather than optimally.
-
-The Gibbs Invariant framework is the unifying theory underneath all of them.
+These examples motivate the same operational rule: once invariant behavior is detected, prioritize edge-localized correction over uniform global refinement.
 
 ---
 
@@ -44,10 +42,10 @@ The Gibbs Invariant framework is the unifying theory underneath all of them.
 ### Energy Invariant
 For a piecewise-smooth signal with jump discontinuities, truncated to N Fourier terms:
 
-- **~89% of total squared error** concentrates inside zones of width **π/N** around each discontinuity
+- **~89% of total squared error** concentrates inside zones of width **π/(2N+1)** around each discontinuity
 - This fraction is **constant across all N** — it does not decay as you add harmonics
-- Error density inside the zone scales as **N/π**, exactly compensating the shrinkage
-- The crossover **N₁ ≈ 13** (unit square wave) marks the point at which Gibbs zone error surpasses global RMS error — after which global refinement is structurally inefficient
+- Error density inside the zone scales as **O(N)**, compensating zone shrinkage
+- The crossover **N₁ ≈ 26** (unit square wave) marks the point at which pointwise Gibbs error (as a fraction of jump height) surpasses global RMS error — after which global refinement is structurally inefficient
 
 ### Radius Invariant
 For the same signal in epicycle form, the cumulative radius budget R(N) = Σ|cₖ|:
@@ -57,7 +55,87 @@ For the same signal in epicycle form, the cumulative radius budget R(N) = Σ|c�
 - Smooth signals (triangle wave, etc.) converge to finite budget; increments decay to zero
 - Decision rule: if the per-doubling increment stays **above ~0.2** past N ≈ 50, the signal contains true jump discontinuities
 
-The mechanism behind both: at a discontinuity, every missing harmonic is **in phase** — their collective absence hits constructively. In smooth regions, missing harmonics have scattered phases and cancel. The jump is the one place where everything goes wrong at once, and it goes wrong in a precisely quantifiable way.
+Mechanism (both theorems): near jumps, missing harmonics align constructively; away from jumps, phases decorrelate and partially cancel.
+
+---
+
+## Numerical Plots (From `gibbs_invariant.py`)
+
+### Theorem 1: Energy Invariant
+
+![Gibbs Energy Invariant Plot](assets/energy_invariant.png)
+
+Interpretation:
+
+- Left panel: pointwise Gibbs error / jump height converges to the Wilbraham-Gibbs limit (~0.08949)
+- Right panel: L² error concentration in Gibbs zones remains near ~0.89 across increasing N
+
+Code snippet used to compute the Theorem 1 metrics:
+
+```python
+def gibbs_overshoot(N: int,
+                    amplitude: float = 1.0,
+                    local_samples_per_harmonic: int = 64) -> float:
+    m = max(4096, local_samples_per_harmonic * N)
+    window = 6.0 * np.pi / max(N, 1)
+    x_local = np.linspace(-window, window, m, endpoint=False)
+    approx_local = square_wave_partial_sum(x_local, N=N, amplitude=amplitude)
+    mask = np.abs(x_local) < 4 * np.pi / max(N, 1)
+    return float(np.max(approx_local[mask]) if np.any(mask) else 0.0)
+
+def energy_concentration_fraction(N: int,
+                                  x: np.ndarray,
+                                  amplitude: float = 1.0,
+                                  zone_width_factor: float = ENERGY_ZONE_WIDTH_FACTOR) -> float:
+    approx = square_wave_partial_sum(x, N=N, amplitude=amplitude)
+    target = square_wave(x, amplitude=amplitude)
+    err2 = (approx - target) ** 2
+    total = float(np.sum(err2))
+    if total == 0.0:
+        return 0.0
+    width = zone_width_factor * np.pi / (2 * N + 1)
+    dist_to_zero = np.abs(x)
+    dist_to_pi = np.minimum(np.abs(x - np.pi), np.abs(x + np.pi))
+    zone_mask = (dist_to_zero <= width) | (dist_to_pi <= width)
+    zone = float(np.sum(err2[zone_mask]))
+    return zone / total
+```
+
+### Theorem 2: Radius Invariant
+
+![Gibbs Radius Invariant Plot](assets/radius_budget_verification.png)
+
+Interpretation:
+
+- Square-wave radius budget follows logarithmic growth: `R(N) ~ (2/pi) ln(N) + C`
+- Doubling increment approaches `(2/pi) ln(2) ~ 0.4413`
+- Triangle-wave control converges (no persistent budget growth)
+
+Code snippet used for the Theorem 2 budget:
+
+```python
+def square_wave_radii(N: int, amplitude: float = 1.0) -> np.ndarray:
+    k = np.arange(1, 2 * N, 2, dtype=float)
+    return (4 * amplitude) / (np.pi * k)
+
+def cumulative_radius_budget(radii: np.ndarray) -> np.ndarray:
+    return np.cumsum(radii)
+
+def radius_doubling_deltas(radii: np.ndarray, min_n: int = 8) -> List[float]:
+    deltas: List[float] = []
+    n = max(min_n, 1)
+    while 2 * n <= len(radii):
+        delta = radii[:2 * n].sum() - radii[:n].sum()
+        deltas.append(delta)
+        n *= 2
+    return deltas
+```
+
+Run locally to regenerate both figures:
+
+```bash
+python3 gibbs_invariant.py
+```
 
 ---
 
@@ -82,13 +160,13 @@ The mechanism behind both: at a discontinuity, every missing harmonic is **in ph
 
 ## Falsifiability
 
-These are not observations dressed as theorems. Each result has explicit falsification criteria stated in the technical expositions.
+Each theorem includes explicit falsification criteria in the technical expositions.
 
-The Gibbs Energy Invariant is falsified if, for a sharp square wave, the fraction of squared error inside a π/N zone around each discontinuity decays steadily with N rather than converging to a constant near 89%.
+The Gibbs Energy Invariant is falsified if, for a sharp square wave, the fraction of squared error inside a `π/(2N+1)` zone around each discontinuity decays steadily with `N` rather than stabilizing near 89%.
 
 The Gibbs Radius Invariant is falsified if, for a sharp square wave, the added total radius per doubling decays steadily rather than settling near (2/π)ln(2) ≈ 0.4413.
 
-Both have been verified numerically across N = 10 through N = 1,600 with convergence to theoretical values.
+Both have been verified numerically across `N = 10` through `N = 2,000` with convergence to theoretical values.
 
 ---
 
@@ -119,4 +197,4 @@ If you use these results, please cite this repository until a formal paper is av
 
 ---
 
-*The Gibbs phenomenon has been called an annoyance, an artifact, a limitation. It is all of those things. It is also a precise, scale-invariant, closed-form structure that tells you exactly where your representation is failing and why. That's not a problem to be managed. That's information.*
+*The Gibbs phenomenon can be used as a measurable diagnostic, not only as a limitation: it quantifies where and how spectral representations fail near discontinuities.*

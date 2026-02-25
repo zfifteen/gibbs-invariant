@@ -34,7 +34,7 @@ Each successive harmonic contributes energy proportional to \(1/(2k+1)^2\), whic
 
 ### The 89% Error Concentration Constant
 
-Numerical computation reveals that when you define the "Gibbs zone" as a neighborhood of width \(\pi/(2N+1)\) around each discontinuity, this zone captures approximately 88.7% of the total L2 error for piecewise-constant signals, with standard deviation under 1% across all tested values of N from 2 to 50. The error density inside this zone scales as \(N\) relative to the background, while the zone width scales as \(1/N\), producing a scale-invariant product. [seas.ucla](http://www.seas.ucla.edu/dsplab/fgp/over.html)
+Numerical computation reveals that when you define the "Gibbs zone" as a neighborhood of width \(\pi/(2N+1)\) around each discontinuity, this zone captures approximately 88.7% of the total L² error for piecewise-constant signals, with standard deviation under 1% across all tested values of N from 2 to 50. The error density inside this zone scales as \(N\) relative to the background, while the zone width scales as \(1/N\), producing a scale-invariant product. [seas.ucla](http://www.seas.ucla.edu/dsplab/fgp/over.html)
 
 This was confirmed for rectangular pulses with different duty cycles (25%), which showed the same ~89-91% concentration, indicating the result is not specific to the 50% duty cycle square wave. [arxiv](https://arxiv.org/abs/2005.12346)
 
@@ -46,7 +46,7 @@ The underlying mechanism is constructive interference of missing harmonics at di
 
 The Gibbs overshoot maintains a fixed amplitude of approximately 8.95% of the jump height (the integral \(\mathrm{Si}(\pi)/\pi - 1/2\)) regardless of N. Meanwhile, the RMS error \(\sqrt{1 - E_N}\) decreases as \(O(1/\sqrt{N})\). These two quantities cross at approximately N = 26 harmonics (highest frequency: 51 times the fundamental). [en.wikipedia](https://en.wikipedia.org/wiki/Convergence_of_Fourier_series)
 
-Below N = 26, the distributed L2 error dominates, and adding harmonics improves global fidelity. Above N = 26, the constant Gibbs artifact dominates all global error metrics, and additional harmonics yield diminishing returns concentrated almost entirely in smooth regions that are already well-approximated.
+Below N = 26, the distributed L² error dominates, and adding harmonics improves global fidelity. Above N = 26, the constant Gibbs artifact dominates all global error metrics, and additional harmonics yield diminishing returns concentrated almost entirely in smooth regions that are already well-approximated.
 
 ### Engineering Decision Rule
 
@@ -57,4 +57,4 @@ When bandwidth or computation budget is constrained, the crossover value \(N_c\)
 
 ### Falsification Criteria
 
-Measure the fraction of L2 error inside the Gibbs zone (width \(\pi/(2N+1)\) per discontinuity) for any piecewise-constant periodic signal with N ranging from 3 to 200. If this fraction deviates from 89% by more than 3 percentage points for any N > 3, the self-similar scaling claim is falsified. [users.math.msu](https://users.math.msu.edu/users/iwenmark/Papers/main_2016.pdf)
+Measure the fraction of L² error inside the Gibbs zone (width \(\pi/(2N+1)\) per discontinuity) for any piecewise-constant periodic signal with N ranging from 3 to 200. If this fraction deviates from 89% by more than 3 percentage points for any N > 3, the self-similar scaling claim is falsified. [users.math.msu](https://users.math.msu.edu/users/iwenmark/Papers/main_2016.pdf)
