@@ -1,3 +1,5 @@
+![The Gibbs Invariant Banner](assets/readme-banner.png)
+
 # The Gibbs Invariant
 
 > *Everyone knows the Gibbs phenomenon produces a persistent overshoot near discontinuities. Far fewer know that this overshoot is the visible tip of a deeper structure — one with quantifiable, scale-invariant properties that have concrete engineering consequences.*
