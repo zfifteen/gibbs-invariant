@@ -23,6 +23,12 @@ F_N(\alpha)=\frac{\int_{\cup_j\{|x-x_j|\le w_N(\alpha)\}} |e_N(x)|^2\,dx}
 \]
 Then \(F_N(\alpha)\to C(\alpha)\in(0,1)\) as \(N\to\infty\), where \(C\) depends on \(\alpha\) (zone-width choice) but not on \(N\).
 
+## Proof bridge
+
+A minimal derivation of the convergence claim is provided in
+[`docs/theorem_1_proof_sketch.md`](/Users/velocityworks/IdeaProjects/gibbs-invariant/docs/theorem_1_proof_sketch.md),
+showing both \(E_{\text{zone}}(N,\alpha)\) and \(E_{\text{tot}}(N)\) scale as \(1/K(N)\), so their ratio converges to \(C(\alpha)\).
+
 ## Practical interpretation
 
 The Gibbs phenomenon is therefore not only a local overshoot effect; it is an error-allocation law. As \(N\) grows, edge zones shrink (\(\sim 1/N\)) while error density inside them rises, producing an \(N\)-stable fraction of total residual \(L^2\) error.
