@@ -12,7 +12,7 @@ This repository presents two linked theorems for piecewise-smooth periodic signa
 
 In short:
 
-**Theorem 1 — Gibbs Energy Invariant:** For Fourier truncation order `N`, approximately 89% of the remaining L² error concentrates in shrinking neighborhoods around discontinuities (zone width proportional to `1/N`). This concentration fraction is approximately invariant across increasing `N`. A computable crossover `N₁` marks where pointwise Gibbs error (as a fraction of jump height) exceeds global RMS error.
+**Theorem 1 — Gibbs Energy Invariant:** For Fourier truncation order `N`, an `N`-stable fraction `C(α)` of remaining L² error concentrates in shrinking neighborhoods around discontinuities (zone width `α·π/K(N)`, with `K(N)=2N+1` for odd-harmonic truncation and `K(N)=N` for full-harmonic truncation). For the unit square wave at `α=1`, this is approximately `0.89`. A computable crossover `N₁` marks where pointwise Gibbs error (as a fraction of jump height) exceeds global RMS error.
 
 **Theorem 2 — Gibbs Radius Invariant:** In epicycle/Fourier-coefficient form, signals with true jumps require a cumulative radius budget that grows as `R(N) ~ (2/pi) ln(N) + C`. Under doubling, the increment converges to the closed-form constant `ΔR -> (2/pi) ln(2) ≈ 0.4413`. Continuous controls (for example triangle wave) have saturating budget and vanishing doubling increment.
 
@@ -42,8 +42,9 @@ These examples motivate the same operational rule: once invariant behavior is de
 ### Energy Invariant
 For a piecewise-smooth signal with jump discontinuities, truncated to N Fourier terms:
 
-- **~89% of total squared error** concentrates inside zones of width **π/(2N+1)** around each discontinuity
-- This fraction is **constant across all N** — it does not decay as you add harmonics
+- **A stable fraction `C(α)` of total squared error** concentrates inside zones of width **`α·π/K(N)`** around each discontinuity
+- For square-wave odd-harmonic truncation (`K(N)=2N+1`) at `α=1`, this concentration is **~0.89**
+- The concentration is **stable in `N` for fixed `α`**, and **changes with `α`**
 - Error density inside the zone scales as **O(N)**, compensating zone shrinkage
 - The crossover **N₁ ≈ 26** (unit square wave) marks the point at which pointwise Gibbs error (as a fraction of jump height) surpasses global RMS error — after which global refinement is structurally inefficient
 
@@ -68,7 +69,7 @@ Mechanism (both theorems): near jumps, missing harmonics align constructively; a
 Interpretation:
 
 - Left panel: pointwise Gibbs error / jump height converges to the Wilbraham-Gibbs limit (~0.08949)
-- Right panel: L² error concentration in Gibbs zones remains near ~0.89 across increasing N
+- Right panel: L² error concentration in Gibbs zones remains near the `α=1` level (~0.89 for square wave)
 
 Code snippet used to compute the Theorem 1 metrics:
 
@@ -87,18 +88,15 @@ def energy_concentration_fraction(N: int,
                                   x: np.ndarray,
                                   amplitude: float = 1.0,
                                   zone_width_factor: float = ENERGY_ZONE_WIDTH_FACTOR) -> float:
-    approx = square_wave_partial_sum(x, N=N, amplitude=amplitude)
-    target = square_wave(x, amplitude=amplitude)
-    err2 = (approx - target) ** 2
-    total = float(np.sum(err2))
-    if total == 0.0:
-        return 0.0
-    width = zone_width_factor * np.pi / (2 * N + 1)
-    dist_to_zero = np.abs(x)
-    dist_to_pi = np.minimum(np.abs(x - np.pi), np.abs(x + np.pi))
-    zone_mask = (dist_to_zero <= width) | (dist_to_pi <= width)
-    zone = float(np.sum(err2[zone_mask]))
-    return zone / total
+    return energy_concentration_fraction_for_signal(
+        N=N,
+        x=x,
+        target_fn=lambda z: square_wave(z, amplitude=amplitude),
+        partial_sum_fn=lambda z, n: square_wave_partial_sum(z, N=n, amplitude=amplitude),
+        jump_locations=(0.0, np.pi, -np.pi),
+        zone_width_factor=zone_width_factor,
+        harmonic_bandwidth="odd",
+    )
 ```
 
 ### Theorem 2: Radius Invariant
@@ -110,6 +108,7 @@ Interpretation:
 - Square-wave radius budget follows logarithmic growth: `R(N) ~ (2/pi) ln(N) + C`
 - Doubling increment approaches `(2/pi) ln(2) ~ 0.4413`
 - Triangle-wave control converges (no persistent budget growth)
+- Additional discontinuous control (sawtooth) also shows logarithmic radius growth and persistent nonzero doubling increment
 
 Code snippet used for the Theorem 2 budget:
 
@@ -158,6 +157,8 @@ Expected verification markers in console output:
 - `Theorem 1 overshoot target (plateau=1): 1.178979744472`
 - `Theorem 1 pointwise error as jump fraction: 0.089489872236`
 - `Estimated crossover N where pointwise Gibbs error > global RMS error: 26`
+- `Additional discontinuous example (sawtooth):`
+- `Zone-width robustness check (square wave):`
 
 The exact table values may vary at the last displayed digit by platform/BLAS implementation, but the constants and crossover should remain stable.
 
@@ -186,7 +187,7 @@ The exact table values may vary at the last displayed digit by platform/BLAS imp
 
 Each theorem includes explicit falsification criteria in the technical expositions.
 
-The Gibbs Energy Invariant is falsified if, for a sharp square wave, the fraction of squared error inside a `π/(2N+1)` zone around each discontinuity decays steadily with `N` rather than stabilizing near 89%.
+The Gibbs Energy Invariant is falsified if, for a sharp square wave and fixed `α`, the fraction of squared error inside the `α·π/(2N+1)` zone around each discontinuity decays steadily with `N` rather than stabilizing near `C(α)`.
 
 The Gibbs Radius Invariant is falsified if, for a sharp square wave, the added total radius per doubling decays steadily rather than settling near (2/π)ln(2) ≈ 0.4413.
 

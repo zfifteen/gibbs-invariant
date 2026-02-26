@@ -1,17 +1,43 @@
 # The Gibbs Invariant: Theorem 2 (Radius Budget Invariant)
 
-In this spinning-circle build-up, a true jump in the target shape shows up as a “circle-length budget” that never levels off, even though the drawn wave stays within the same height.
+## Formal statement
 
-Most people focus on the edge ringing or on how each added wiggle gets smaller, but those clues look local and can be hard to compare across different signals.
+Let \(f\) be \(2\pi\)-periodic, piecewise \(C^1\) (BV suffices), with at least one jump discontinuity. Let \(c_k\) be Fourier coefficients and define the radius budget
+\[
+R(N)=\sum_{k=1}^{N} |c_k|.
+\]
+Under a jump, \(|c_k| \sim K/k\), hence
+\[
+R(N)=K\log N + O(1),
+\]
+so \(R(N)\) diverges logarithmically.
 
-Instead, add up the radii of all circles used so far, and watch how much that total grows when you double the number of circles.
+Equivalently, the doubling increment converges:
+\[
+\Delta_N := R(2N)-R(N)\to K\log 2.
+\]
 
-For the classic square-like wave in the image, doubling the number of circles should keep adding almost the same extra total radius, about 0.44 of the flat-top level, even when you go from 50 to 100 circles.
+## Square-wave normalization used in code
 
-The mechanism is that a jump forces many tiny fast circles whose sizes shrink slowly, so you need an ever-growing total radius that is then held in check by cancellation between circles.
+Conventions in this repo:
 
-If you repeat the same measurement for a triangle-like wave or any version of the square wave with even a small amount of smoothing, the extra total radius added per doubling should quickly shrink toward zero instead of staying roughly constant.
+- Plateau normalization: square wave levels are \(\pm 1\) (jump height \(2\)).
+- Truncation: first \(N\) odd harmonics.
+- Radii: \(r_m=\frac{4}{\pi(2m-1)}\), \(m=1,\dots,N\).
 
-This would be proven wrong if, for a sharp square wave, the added total radius per doubling decays steadily with more circles rather than settling near a constant.
+Then
+\[
+R(N)\sim \frac{2}{\pi}\log N + C,\qquad
+R(2N)-R(N)\to \frac{2}{\pi}\log 2 \approx 0.4412712.
+\]
 
-Decision rule: when the added total radius per doubling stays above about 0.2 of the waveform’s plateau level beyond a few dozen circles, treat the underlying signal as containing real jumps; otherwise treat it as continuous and expect edge ringing to fade much faster with more circles.
+## Contrasts and additional discontinuous example
+
+- Continuous control (triangle-like, \(1/k^2\) tail): \(R(N)\) saturates and \(\Delta_N \to 0\).
+- Additional discontinuous control (periodic sawtooth, full-harmonic \(1/k\) tail): \(R(N)\) again grows like \(\log N\), with persistent nonzero doubling increment.
+
+This confirms the invariant is about jump-regularity class, not one specific waveform.
+
+## Decision rule used operationally
+
+When recent doubling increments stay above a plateau-scaled threshold (default `0.2`) beyond moderate \(N\), classify as true-jump behavior. When increments collapse toward zero, classify as continuous/corner-only behavior.

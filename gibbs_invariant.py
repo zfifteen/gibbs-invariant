@@ -27,10 +27,27 @@ def square_wave_partial_sum(x: np.ndarray, N: int, amplitude: float = 1.0) -> np
     k = np.arange(1, 2 * N, 2, dtype=float)
     return (4.0 * amplitude / np.pi) * np.sum(np.sin(np.outer(k, x)) / k[:, None], axis=0)
 
+def sawtooth_wave(x: np.ndarray, amplitude: float = 1.0) -> np.ndarray:
+    """Periodic sawtooth on [-pi, pi) with single jump at +/-pi."""
+    x_wrapped = ((x + np.pi) % (2 * np.pi)) - np.pi
+    return amplitude * (x_wrapped / np.pi)
+
+def sawtooth_partial_sum(x: np.ndarray, N: int, amplitude: float = 1.0) -> np.ndarray:
+    """N-harmonic sine series for sawtooth on [-pi, pi)."""
+    if N < 1:
+        return np.zeros_like(x, dtype=float)
+    k = np.arange(1, N + 1, dtype=float)
+    coeff = (2.0 * amplitude / np.pi) * ((-1.0) ** (k + 1.0)) / k
+    return np.sum(coeff[:, None] * np.sin(np.outer(k, x)), axis=0)
+
 # ========================= RADII (Theorem 2) =========================
 def square_wave_radii(N: int, amplitude: float = 1.0) -> np.ndarray:
     k = np.arange(1, 2 * N, 2, dtype=float)
     return (4 * amplitude) / (np.pi * k)
+
+def sawtooth_radii(N: int, amplitude: float = 1.0) -> np.ndarray:
+    k = np.arange(1, N + 1, dtype=float)
+    return (2 * amplitude) / (np.pi * k)
 
 def cumulative_radius_budget(radii: np.ndarray) -> np.ndarray:
     return np.cumsum(radii)
@@ -77,21 +94,66 @@ def energy_concentration_fraction(N: int,
     Fraction of squared error inside Gibbs zones around discontinuities.
     Zone width per jump: zone_width_factor * pi / (2N + 1).
     """
+    return energy_concentration_fraction_for_signal(
+        N=N,
+        x=x,
+        target_fn=lambda z: square_wave(z, amplitude=amplitude),
+        partial_sum_fn=lambda z, n: square_wave_partial_sum(z, N=n, amplitude=amplitude),
+        jump_locations=(0.0, np.pi, -np.pi),
+        zone_width_factor=zone_width_factor,
+        harmonic_bandwidth="odd",
+    )
+
+def energy_concentration_fraction_for_signal(
+    N: int,
+    x: np.ndarray,
+    target_fn,
+    partial_sum_fn,
+    jump_locations: Tuple[float, ...],
+    zone_width_factor: float = ENERGY_ZONE_WIDTH_FACTOR,
+    harmonic_bandwidth: str = "all",
+) -> float:
+    """
+    Fraction of squared reconstruction error inside Gibbs zones for a given signal.
+    Zone width per jump is zone_width_factor * pi / K(N), where K(N)=2N+1 for odd-only
+    truncations and K(N)=N for full-harmonic truncations.
+    """
     if N < 1:
         return 0.0
-    approx = square_wave_partial_sum(x, N=N, amplitude=amplitude)
-    target = square_wave(x, amplitude=amplitude)
+    approx = partial_sum_fn(x, N)
+    target = target_fn(x)
     err2 = (approx - target) ** 2
     total = float(np.sum(err2))
     if total == 0.0:
         return 0.0
 
-    width = zone_width_factor * np.pi / (2 * N + 1)
-    dist_to_zero = np.abs(x)
-    dist_to_pi = np.minimum(np.abs(x - np.pi), np.abs(x + np.pi))
-    zone_mask = (dist_to_zero <= width) | (dist_to_pi <= width)
+    denom = (2 * N + 1) if harmonic_bandwidth == "odd" else N
+    width = zone_width_factor * np.pi / max(denom, 1)
+    x_wrapped = ((x + np.pi) % (2 * np.pi)) - np.pi
+    zone_mask = np.zeros_like(x_wrapped, dtype=bool)
+    for jump in jump_locations:
+        jump_wrapped = ((jump + np.pi) % (2 * np.pi)) - np.pi
+        dist = np.abs(x_wrapped - jump_wrapped)
+        dist = np.minimum(dist, 2 * np.pi - dist)
+        zone_mask |= dist <= width
     zone = float(np.sum(err2[zone_mask]))
     return zone / total
+
+def sawtooth_energy_concentration_fraction(
+    N: int,
+    x: np.ndarray,
+    amplitude: float = 1.0,
+    zone_width_factor: float = ENERGY_ZONE_WIDTH_FACTOR,
+) -> float:
+    return energy_concentration_fraction_for_signal(
+        N=N,
+        x=x,
+        target_fn=lambda z: sawtooth_wave(z, amplitude=amplitude),
+        partial_sum_fn=lambda z, n: sawtooth_partial_sum(z, N=n, amplitude=amplitude),
+        jump_locations=(np.pi, -np.pi),
+        zone_width_factor=zone_width_factor,
+        harmonic_bandwidth="all",
+    )
 
 def estimate_crossover_harmonic(max_N: int = 200) -> Optional[int]:
     """Docs definition: first N where 8.95%-style pointwise error exceeds global RMS error."""
@@ -112,6 +174,7 @@ def plot_radius_budget(dark_mode: bool = True,
     """Theorem 2: persistent logarithmic radius-budget growth for true jumps."""
     Ns = np.logspace(1, 4.2, 120, dtype=int)
     budgets_sq = np.array([cumulative_radius_budget(square_wave_radii(int(n)))[-1] for n in Ns])
+    budgets_saw = np.array([cumulative_radius_budget(sawtooth_radii(int(n)))[-1] for n in Ns])
 
     def triangle_radii(N: int):
         k = np.arange(1, 2 * N, 2, dtype=float)
@@ -124,15 +187,19 @@ def plot_radius_budget(dark_mode: bool = True,
     if dark_mode:
         plt.style.use('dark_background')
         color_sq = '#00eeff'
+        color_saw = '#66ff66'
         color_tri = '#ff44cc'
         color_theo = '#ffcc44'
     else:
         color_sq = '#0088ff'
+        color_saw = '#009944'
         color_tri = '#cc0088'
         color_theo = '#ff8800'
 
     plt.plot(Ns, budgets_sq, 'o-', color=color_sq, lw=2.8, ms=3.5,
              label='Square Wave (True Jumps — Theorem 2)')
+    plt.plot(Ns, budgets_saw, '^-', color=color_saw, lw=2.2, ms=3.2,
+             label='Sawtooth (True Jumps — 1/k tail)')
     plt.plot(Ns, budgets_tri, 's-', color=color_tri, lw=2.2, ms=3.5,
              label='Triangle Wave (Continuous — saturates)')
     plt.plot(Ns, theo, '--', color=color_theo, lw=2.4,
@@ -249,6 +316,22 @@ def verify_invariants():
     print(f"  Theorem 2 delta-per-doubling target: {GIBBS_RADIUS_DELTA:.12f}")
     print(f"  Theorem 1 overshoot target (plateau=1): {GIBBS_OVERSHOOT_LIMIT:.12f}")
     print(f"  Theorem 1 pointwise error as jump fraction: {GIBBS_OVERSHOOT_FRACTION_JUMP:.12f}")
+    print()
+    print("Additional discontinuous example (sawtooth):")
+    print(f"{'N':>5} | {'R(N)':>7} | {'Δ/double':>9} | {'E-zone α=1':>11}")
+    print("-" * 42)
+    for N in [16, 32, 64, 128, 256, 512]:
+        radii_sw = sawtooth_radii(N)
+        deltas_sw = radius_doubling_deltas(radii_sw, min_n=8)
+        avg_delta_sw = np.mean(deltas_sw[-3:]) if deltas_sw else 0.0
+        e_zone_sw = sawtooth_energy_concentration_fraction(N, x, zone_width_factor=1.0)
+        print(f"{N:5d} | {radii_sw.sum():7.3f} | {avg_delta_sw:9.4f} | {e_zone_sw:11.4f}")
+
+    print()
+    print("Zone-width robustness check (square wave):")
+    for alpha in [0.5, 1.0, 2.0]:
+        vals = [energy_concentration_fraction(N, x, zone_width_factor=alpha) for N in [64, 128, 256, 512, 1024]]
+        print(f"  alpha={alpha:.1f}: mean={np.mean(vals):.4f}, min={np.min(vals):.4f}, max={np.max(vals):.4f}")
 
 # ========================= RUN =========================
 if __name__ == "__main__":
