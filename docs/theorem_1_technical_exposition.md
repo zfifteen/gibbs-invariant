@@ -21,6 +21,12 @@ F_N(\alpha)=\frac{\int_{\Omega_N(\alpha)}|e_N(x)|^2\,dx}{\int_{-\pi}^{\pi}|e_N(x
 
 The claim is that \(F_N(\alpha)\to C(\alpha)\in(0,1)\) as \(N\to\infty\): the fraction is asymptotically stable in \(N\) for fixed \(\alpha\), and the limit depends on \(\alpha\).
 
+## Proof bridge
+
+For a concise derivation from standard Fourier asymptotics and Gibbs scaling to
+\(F_N(\alpha)\to C(\alpha)\), see
+[`docs/theorem_1_proof_sketch.md`](theorem_1_proof_sketch.md).
+
 ## Mechanism
 
 Near each jump, missing high-frequency modes align coherently and produce \(O(1)\) local oscillation amplitude inside a band that shrinks like \(1/K(N)\). In smooth regions, phase cancellation dominates and residual energy density is much lower. This creates a stable partition of residual \(L^2\) energy between jump zones and smooth regions.
