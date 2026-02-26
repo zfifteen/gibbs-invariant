@@ -26,7 +26,7 @@ Then \(F_N(\alpha)\to C(\alpha)\in(0,1)\) as \(N\to\infty\), where \(C\) depends
 ## Proof bridge
 
 A minimal derivation of the convergence claim is provided in
-[`docs/theorem_1_proof_sketch.md`](/Users/velocityworks/IdeaProjects/gibbs-invariant/docs/theorem_1_proof_sketch.md),
+[`docs/theorem_1_proof_sketch.md`](theorem_1_proof_sketch.md),
 showing both \(E_{\text{zone}}(N,\alpha)\) and \(E_{\text{tot}}(N)\) scale as \(1/K(N)\), so their ratio converges to \(C(\alpha)\).
 
 ## Practical interpretation

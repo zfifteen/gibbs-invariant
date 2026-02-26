@@ -25,7 +25,7 @@ The claim is that \(F_N(\alpha)\to C(\alpha)\in(0,1)\) as \(N\to\infty\): the fr
 
 For a concise derivation from standard Fourier asymptotics and Gibbs scaling to
 \(F_N(\alpha)\to C(\alpha)\), see
-[`docs/theorem_1_proof_sketch.md`](/Users/velocityworks/IdeaProjects/gibbs-invariant/docs/theorem_1_proof_sketch.md).
+[`docs/theorem_1_proof_sketch.md`](theorem_1_proof_sketch.md).
 
 ## Mechanism
 

@@ -41,6 +41,7 @@ With local variable \(u=K(N)(x-x_j)\), the jump kernel has the scaling form
 G_N(x-x_j)\approx g(u),
 \]
 for a fixed profile \(g\) determined by the truncation convention. The profile is universal across the signal class; jump heights/locations enter only through \(\Delta_j,x_j\).
+Equivalently, \(e_N(x_j+u/K(N))\to \Delta_j g(u)\) at leading order near each jump.
 
 ## 3) Zone energy and total energy share the same \(1/K(N)\) scale
 
@@ -90,3 +91,8 @@ To keep statements concise while theorem-grade:
 2. cite coefficient asymptotics \(\Rightarrow E_{\text{tot}}(N)\sim C_{\text{tot}}/K(N)\),
 3. cite Dirichlet-kernel Gibbs scaling \(\Rightarrow E_{\text{zone}}(N,\alpha)\sim C_{\text{zone}}(\alpha)/K(N)\),
 4. conclude \(F_N(\alpha)\to C(\alpha)\).
+
+## Standard references
+
+- A. Zygmund, *Trigonometric Series* (Fourier coefficient asymptotics and convergence theory).
+- Y. Katznelson, *An Introduction to Harmonic Analysis* (classical Fourier-series estimates).
