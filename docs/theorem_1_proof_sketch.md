@@ -24,7 +24,7 @@ Substituting the asymptotic and summing \(\sum_{k>N}k^{-2}\sim 1/N\) yields
 \[
 E_{\text{tot}}(N)=\frac{C_{\text{tot}}}{K(N)}+o\!\left(\frac{1}{K(N)}\right),
 \]
-where \(C_{\text{tot}}\) depends on jump data and normalization constants, but not on \(N\). Smooth-background contributions are higher order.
+where \(C_{\text{tot}}\) depends on jump data and normalization constants, but not on \(N\). Smooth-background contributions are higher order and contribute only \(o(1/K(N))\) to the \(L^2\) tail energy.
 
 ## 2) Near each jump, error follows a universal scaled Gibbs profile
 
@@ -67,6 +67,7 @@ where (up to the same normalization convention)
 \[
 C_{\text{tot}}=\sum_j \Delta_j^2\int_{-\infty}^{\infty}g(u)^2\,du.
 \]
+In coefficient-space derivations, mixed jump terms carry oscillatory phase factors and average out at leading order, leaving this diagonal \(\sum_j\Delta_j^2\)-type constant.
 
 ## 4) Ratio convergence
 
