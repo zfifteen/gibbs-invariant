@@ -34,14 +34,15 @@ S_N f(x)=\frac{1}{2\pi}\int_{-\pi}^{\pi}f(y)\,D_N(x-y)\,dy,
 \]
 decompose \(f\) into jump part + smooth remainder. Standard Gibbs scaling gives
 \[
-e_N(x)=f(x)-S_N f(x)=\sum_j \Delta_j\,G_N(x-x_j)+\text{(smaller remainder)}.
+e_N(x)=S_N f(x)-f(x)=-\sum_j \Delta_j\,G_N(x-x_j)+\text{(smaller remainder)}.
 \]
+Here \(e_N\) uses the same sign convention as the other Theorem 1 notes; only \(|e_N|^2\) enters the energy ratios, so the overall sign is immaterial.
 With local variable \(u=K(N)(x-x_j)\), the jump kernel has the scaling form
 \[
 G_N(x-x_j)\approx g(u),
 \]
 for a fixed profile \(g\) determined by the truncation convention. The profile is universal across the signal class; jump heights/locations enter only through \(\Delta_j,x_j\).
-Equivalently, \(e_N(x_j+u/K(N))\to \Delta_j g(u)\) at leading order near each jump.
+Equivalently, \(e_N(x_j+u/K(N))\to -\Delta_j g(u)\) at leading order near each jump.
 
 ## 3) Zone energy and total energy share the same \(1/K(N)\) scale
 
