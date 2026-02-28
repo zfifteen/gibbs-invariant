@@ -1,0 +1,231 @@
+diff --git a/cjpeg.c b/cjpeg.c
+index 2e965c8..0fb3a4c 100644
+--- a/cjpeg.c
++++ b/cjpeg.c
+@@ -40,6 +40,7 @@
+ #include "cdjpeg.h"             /* Common decls for cjpeg/djpeg applications */
+ #include "jversion.h"           /* for version message */
+ #include "jconfigint.h"
++#include "gibbs_routing.h"
+ 
+ 
+ /* Create the add-on message string table. */
+@@ -170,6 +171,7 @@ static char *outfilename;       /* for -outfile switch */
+ static boolean memdst;          /* for -memdst switch */
+ static boolean report;          /* for -report switch */
+ static boolean strict;          /* for -strict switch */
++static gibbs_routing_mode gibbs_mode; /* for -gibbs-routing switch */
+ 
+ 
+ #ifdef CJPEG_FUZZER
+@@ -300,6 +302,7 @@ usage(void)
+   fprintf(stderr, "  -memdst        Compress to memory instead of file (useful for benchmarking)\n");
+   fprintf(stderr, "  -report        Report compression progress\n");
+   fprintf(stderr, "  -strict        Treat all warnings as fatal\n");
++  fprintf(stderr, "  --gibbs-routing MODE  Gibbs routing instrumentation: off|log|on\n");
+   fprintf(stderr, "  -verbose  or  -debug   Emit debug output\n");
+   fprintf(stderr, "  -version       Print version information and exit\n");
+   fprintf(stderr, "Switches for wizards:\n");
+@@ -312,6 +315,20 @@ usage(void)
+   exit(EXIT_FAILURE);
+ }
+ 
++LOCAL(gibbs_routing_mode)
++parse_gibbs_mode(const char *val)
++{
++  if (val == NULL)
++    return GIBBS_ROUTING_OFF;
++  if (!strcmp(val, "off"))
++    return GIBBS_ROUTING_OFF;
++  if (!strcmp(val, "log"))
++    return GIBBS_ROUTING_LOG;
++  if (!strcmp(val, "on"))
++    return GIBBS_ROUTING_ON;
++  return (gibbs_routing_mode)-1;
++}
++
+ 
+ LOCAL(int)
+ parse_switches(j_compress_ptr cinfo, int argc, char **argv,
+@@ -352,12 +369,23 @@ parse_switches(j_compress_ptr cinfo, int argc, char **argv,
+   memdst = FALSE;
+   report = FALSE;
+   strict = FALSE;
++  gibbs_mode = GIBBS_ROUTING_OFF;
+   cinfo->err->trace_level = 0;
+ 
+   /* Scan command line options, adjust parameters */
+ 
+   for (argn = 1; argn < argc; argn++) {
+     arg = argv[argn];
++    if (!strncmp(arg, "--gibbs-routing=", 16)) {
++      gibbs_routing_mode parsed = parse_gibbs_mode(arg + 16);
++      if ((int)parsed < 0) {
++        fprintf(stderr, "%s: invalid argument for --gibbs-routing: '%s'\n",
++                progname, arg + 16);
++        usage();
++      }
++      gibbs_mode = parsed;
++      continue;
++    }
+     if (*arg != '-') {
+       /* Not a switch, must be a file name argument */
+       if (argn <= last_file_arg_seen) {
+@@ -652,6 +680,20 @@ parse_switches(j_compress_ptr cinfo, int argc, char **argv,
+     } else if (keymatch(arg, "strict", 2)) {
+       strict = TRUE;
+ 
++    } else if (keymatch(arg, "gibbs-routing", 13)) {
++      gibbs_routing_mode parsed;
++      if (++argn >= argc) {
++        fprintf(stderr, "%s: missing argument for gibbs-routing\n", progname);
++        usage();
++      }
++      parsed = parse_gibbs_mode(argv[argn]);
++      if ((int)parsed < 0) {
++        fprintf(stderr, "%s: invalid argument for gibbs-routing: '%s'\n",
++                progname, argv[argn]);
++        usage();
++      }
++      gibbs_mode = parsed;
++
+     } else if (keymatch(arg, "targa", 1)) {
+       /* Input file is Targa format. */
+       is_targa = TRUE;
+@@ -803,6 +845,7 @@ main(int argc, char **argv)
+   unsigned char *outbuffer = NULL;
+   unsigned long outsize = 0;
+   JDIMENSION num_scanlines;
++  gibbs_routing_ctx grctx;
+ 
+   progname = argv[0];
+   if (progname == NULL || progname[0] == 0)
+@@ -941,6 +984,13 @@ main(int argc, char **argv)
+ 
+   /* Adjust default compression parameters by re-parsing the options */
+   file_index = parse_switches(&cinfo, argc, argv, 0, TRUE);
++  memset(&grctx, 0, sizeof(grctx));
++  grctx.magic = GIBBS_ROUTING_MAGIC;
++  grctx.mode = gibbs_mode;
++  if (gibbs_mode != GIBBS_ROUTING_OFF)
++    cinfo.client_data = &grctx;
++  else
++    cinfo.client_data = NULL;
+ 
+   /* Specify data destination for compression */
+   if (memdst)
+@@ -1021,6 +1071,26 @@ main(int argc, char **argv)
+   /* Finish compression and release memory */
+   (*src_mgr->finish_input) (&cinfo, src_mgr);
+   jpeg_finish_compress(&cinfo);
++  if (gibbs_mode != GIBBS_ROUTING_OFF && grctx.total_blocks > 0ULL) {
++    double edge_pct = (double)grctx.edge_blocks * 100.0 /
++                      (double)grctx.total_blocks;
++    double smooth_pct = (double)grctx.smooth_blocks * 100.0 /
++                        (double)grctx.total_blocks;
++    fprintf(stderr,
++            "gibbs-routing mode=%s blocks=%llu smooth=%llu mixed=%llu edge=%llu edge_pct=%.2f smooth_pct=%.2f\n",
++            gibbs_mode == GIBBS_ROUTING_LOG ? "log" : "on",
++            grctx.total_blocks, grctx.smooth_blocks, grctx.mixed_blocks,
++            grctx.edge_blocks, edge_pct, smooth_pct);
++    fprintf(stderr,
++            "gibbs-routing route_fast=%llu route_expensive=%llu avg_l1_ac=%.2f avg_hf_ac=%.2f\n",
++            grctx.route_fast_blocks, grctx.route_expensive_blocks,
++            (double)grctx.total_l1_ac / (double)grctx.total_blocks,
++            (double)grctx.total_hf_ac / (double)grctx.total_blocks);
++    if (gibbs_mode == GIBBS_ROUTING_ON) {
++      fprintf(stderr,
++              "gibbs-routing note=on mode is Sprint-1 instrumentation; routing decisions are logged, not yet enforced in entropy path.\n");
++    }
++  }
+   jpeg_destroy_compress(&cinfo);
+ 
+   /* Close files, if we opened them */
+diff --git a/jccoefct.c b/jccoefct.c
+index c4e7998..769cfee 100644
+--- a/jccoefct.c
++++ b/jccoefct.c
+@@ -19,6 +19,7 @@
+ #include "jpeglib.h"
+ #include "jsamplecomp.h"
+ #include "jchuff.h"
++#include "gibbs_routing.h"
+ 
+ /* We use a full-image coefficient buffer when doing Huffman optimization,
+  * and also for writing multiple-scan JPEG files.  In all cases, the DCT
+@@ -62,6 +63,53 @@ typedef struct {
+ 
+ typedef my_coef_controller *my_coef_ptr;
+ 
++LOCAL(void)
++gibbs_analyze_block(j_compress_ptr cinfo, const JBLOCKROW blockrow)
++{
++  gibbs_routing_ctx *ctx;
++  int k;
++  unsigned long long l1_ac = 0;
++  unsigned long long hf_ac = 0;
++  int klass;
++
++  if (cinfo == NULL || cinfo->client_data == NULL)
++    return;
++
++  ctx = (gibbs_routing_ctx *)cinfo->client_data;
++  if (ctx->magic != GIBBS_ROUTING_MAGIC || ctx->mode == GIBBS_ROUTING_OFF)
++    return;
++
++  for (k = 1; k < DCTSIZE2; k++) {
++    unsigned long long v = (unsigned long long)abs((int)(*blockrow)[k]);
++    l1_ac += v;
++    if (k >= 20)
++      hf_ac += v;
++  }
++
++  /* Conservative classes for sprint instrumentation only. */
++  if (l1_ac < 50ULL && hf_ac < 12ULL)
++    klass = 0; /* smooth */
++  else if (l1_ac > 300ULL || hf_ac > 75ULL)
++    klass = 2; /* edge */
++  else
++    klass = 1; /* mixed */
++
++  ctx->total_blocks++;
++  ctx->total_l1_ac += l1_ac;
++  ctx->total_hf_ac += hf_ac;
++
++  if (klass == 0) {
++    ctx->smooth_blocks++;
++    ctx->route_fast_blocks++;
++  } else if (klass == 1) {
++    ctx->mixed_blocks++;
++    ctx->route_fast_blocks++;
++  } else {
++    ctx->edge_blocks++;
++    ctx->route_expensive_blocks++;
++  }
++}
++
+ 
+ /* Forward declarations */
+ METHODDEF(boolean) compress_data(j_compress_ptr cinfo, _JSAMPIMAGE input_buf);
+@@ -194,6 +242,10 @@ compress_data(j_compress_ptr cinfo, _JSAMPIMAGE input_buf)
+                                           coef->MCU_buffer[blkn],
+                                           ypos, xpos, (JDIMENSION)blockcnt,
+                                           NULL);
++            if (compptr->component_index == 0) {
++              for (bi = 0; bi < blockcnt; bi++)
++                gibbs_analyze_block(cinfo, coef->MCU_buffer[blkn + bi]);
++            }
+             if (blockcnt < compptr->MCU_width) {
+               /* Create some dummy blocks at the right edge of the image. */
+               jzero_far((void *)coef->MCU_buffer[blkn + blockcnt],
+@@ -309,6 +361,10 @@ compress_first_pass(j_compress_ptr cinfo, _JSAMPIMAGE input_buf)
+                                     (JDIMENSION)(block_row * DCTSIZE),
+                                     (JDIMENSION)0, blocks_across,
+                                     buffer_dst[block_row]);
++      if (compptr->component_index == 0) {
++        for (bi = 0; bi < (int)blocks_across; bi++)
++          gibbs_analyze_block(cinfo, &thisblockrow[bi]);
++      }
+       if (ndummy > 0) {
+         /* Create dummy blocks at the right edge of the image. */
+         thisblockrow += blocks_across; /* => first dummy block */

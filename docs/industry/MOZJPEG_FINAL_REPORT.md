@@ -1,5 +1,9 @@
 # mozjpeg Gibbs-Routing Final Report
 
+Note: This report captures the full experiment timeline (including non-core routing prototypes).
+For the corrected core integration decision and byte-equivalence validation, see
+[MOZJPEG_CORE_CORRECTED_INTEGRATION_REPORT.md](/Users/velocityworks/IdeaProjects/gibbs-invariant/docs/industry/MOZJPEG_CORE_CORRECTED_INTEGRATION_REPORT.md).
+
 ## Objective
 
 Identify a fast, credible performance win candidate from the GitHub software list, implement staged integration in a temp clone, and quantify real performance impact.
