@@ -12,7 +12,7 @@ February 2026
 
 Two complementary mathematical invariants — the Gibbs Energy Invariant and the Gibbs Radius Invariant — provide a unified theoretical framework for understanding, diagnosing, and correcting a fundamental limitation in Fourier-based signal representation. Together they expose a structural flaw that underlies artifacts and inefficiencies across a remarkably wide range of industrial technologies.
 
-| *The Gibbs Energy Invariant: For a piecewise-smooth signal approximated by a truncated Fourier series of N terms, approximately 89% of all squared reconstruction error concentrates inside vanishingly narrow zones (width \~π/N) around each discontinuity. This fraction is scale-invariant — it holds from N=10 to N=10,000 — and defines a critical crossover N₁ beyond which adding global harmonics delivers less than 11% of remaining error reduction to the 90%+ of the domain that is smooth.* |
+| *The Gibbs Energy Invariant: For a piecewise-smooth signal approximated by a truncated Fourier series of N terms, approximately 89% of all squared reconstruction error concentrates inside vanishingly narrow zones (half-width \(w_N(\alpha)=\alpha\pi/K(N)\); for odd-harmonic square-wave mode, \(K(N)=2N+1\)) around each discontinuity. This fraction is scale-invariant — it holds from N=10 to N=10,000 — and defines a critical crossover N₁ beyond which adding global harmonics delivers less than 11% of remaining error reduction to the 90%+ of the domain that is smooth.* |
 | :---- |
 
 | *The Gibbs Radius Invariant: In the equivalent epicycle (spinning-circle) representation, the total radius budget required to represent a signal with true jump discontinuities grows without bound, adding exactly (2/π)ln(2) ≈ 0.4413 units per doubling of circles regardless of how many circles are already employed. Smooth signals converge to a finite budget. This provides a computable, signal-class-agnostic discontinuity detector with a closed-form threshold.* |
@@ -26,22 +26,29 @@ The unifying implication across all domains: there exists a computable threshold
 
 Before examining industrial applications, it is necessary to state the core results precisely, as imprecision in this layer propagates into imprecision in the applications analysis.
 
+## **Conventions (Engineering Use)**
+
+- Plateau normalization is \(\pm1\), so jump height is \(2\).
+- For square-wave truncation in this repo, \(N\) means the number of odd harmonics retained.
+- Odd-harmonic index mapping: \(k_{\max}=2N-1\).
+- Gibbs-zone half-width is \(w_N(\alpha)=\alpha\pi/K(N)\), with \(K(N)=2N+1\) for odd-harmonic truncation and \(K(N)=N\) for full-harmonic truncation.
+
 ## **The Crossover Structure**
 
 For a piecewise-smooth function f with jump discontinuities, the partial Fourier sum Sₙ minimizes global mean-squared error — it is the optimal L² approximation using N basis functions. This global optimality is precisely the source of the local catastrophe: the optimizer is allowed to sacrifice local accuracy at discontinuities in exchange for gains distributed across the smooth regions. It exploits this trade aggressively.
 
-As N increases, the smooth-region error decreases steadily, but the peak error in the Gibbs zones does not. The Gibbs peak overshoot is fixed at approximately 8.95% of the jump magnitude regardless of N. What changes is the width of the zone, which shrinks as π/N. The error density inside the zone therefore increases as N/π — exactly compensating the shrinkage, and locking the fraction of total squared error inside the zone at \~89%.
+As N increases, the smooth-region error decreases steadily, but the peak error in the Gibbs zones does not. The Gibbs peak overshoot is fixed at approximately 8.95% of the jump magnitude regardless of N. What changes is the width of the zone, with half-width \(w_N(\alpha)=\alpha\pi/K(N)\). The error density inside the zone therefore increases as \(K(N)/\pi\) — exactly compensating the shrinkage, and locking the fraction of total squared error inside the zone at \~89% (for the repo default \(\alpha=1\)).
 
-This defines N₁ as the critical crossover: the value of N at which the fixed Gibbs zone error surpasses the global RMS error. For a unit square wave, this occurs near N₁ ≈ 13\. Beyond N₁, each additional harmonic is contributing predominantly to a zone that occupies a negligible fraction of the domain.
+This defines N₁ as the critical crossover: the first truncation order \(N\) at which the fixed pointwise Gibbs error fraction of jump height surpasses the global RMS error. With the repo’s normalization (\(\pm1\) plateau, jump height \(2\)) and square-wave truncation convention (first \(N\) odd harmonics), this occurs near N₁ ≈ 26 (equivalently \(k_{\max}=2N_1-1=51\)). Beyond N₁, each additional harmonic is contributing predominantly to a zone that occupies a negligible fraction of the domain.
 
 | Quantity | Expression | Value (unit square wave) |
 | :---- | :---- | :---- |
 | Gibbs peak overshoot | \~0.0895 × jump | \~9% of jump |
-| Gibbs zone width | π/N | Shrinks with N |
+| Gibbs zone half-width | \(w_N(\alpha)=\alpha\pi/K(N)\) | Odd-harmonic square wave: \(K(N)=2N+1\), so \(O(1/N)\) |
 | Error fraction in zone | \~89% | Invariant across all N |
 | Per-doubling radius increment | (2/π)ln(2) | ≈0.4413 (exact, closed-form) |
 | Smooth-region error fraction | \~11% | Grows relatively with N |
-| Critical crossover N₁ | Signal-dependent | \~13 for unit square wave |
+| Critical crossover N₁ | Signal-dependent (convention-dependent) | \~26 for unit square wave (\(k_{\max}=51\)) |
 
 ## **The Mechanism: Coherent Superposition**
 

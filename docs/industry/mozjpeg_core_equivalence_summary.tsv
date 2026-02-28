@@ -1,7 +1,0 @@
-config	image	off_bytes	log_bytes	on_bytes	off_eq_log	off_eq_on
-cfgA	testorig.ppm	6749	6749	6749	yes	yes
-cfgA	monkey16.ppm	10107	10107	10107	yes	yes
-cfgA	vgl_5674_0098.bmp	9195	9195	9195	yes	yes
-cfgB	testorig.ppm	5010	5010	5010	yes	yes
-cfgB	monkey16.ppm	6913	6913	6913	yes	yes
-cfgB	vgl_5674_0098.bmp	5803	5803	5803	yes	yes
