@@ -1,0 +1,10 @@
+mode	image	runs	total_real_s	avg_ms	output_bytes	edge_pct	smooth_pct
+off	testorig.ppm	40	0.30	7.500	6749	NA	NA
+off	monkey16.ppm	40	0.39	9.750	10107	NA	NA
+off	vgl_5674_0098.bmp	40	0.36	9.000	9195	NA	NA
+log	testorig.ppm	40	0.30	7.500	6749	0.00	69.15
+log	monkey16.ppm	40	0.40	10.000	10107	0.00	24.86
+log	vgl_5674_0098.bmp	40	0.37	9.250	9195	93.89	0.00
+on	testorig.ppm	40	0.30	7.500	6749	0.00	69.15
+on	monkey16.ppm	40	0.39	9.750	10107	0.00	24.86
+on	vgl_5674_0098.bmp	40	0.37	9.250	9195	93.89	0.00
