@@ -103,13 +103,13 @@ For a sharp square wave at fixed \(\alpha\), if \(F_N(\alpha)\) decays monotonic
 
 ### Statement
 
-If \(f\) has at least one jump discontinuity, then \(|c_k|\sim K/k\) for large \(k\), giving
+If \(f\) has at least one jump discontinuity, then \(|c_k|\sim A/k\) for large \(k\), giving
 \[
-R(N) = K\ln N + O(1),
+R(N) = A\ln N + O(1),
 \]
 and therefore the doubling increment converges:
 \[
-\Delta_N := R(2N) - R(N) \to K\ln 2.
+\Delta_N := R(2N) - R(N) \to A\ln 2.
 \]
 
 ### Square-wave normalization
