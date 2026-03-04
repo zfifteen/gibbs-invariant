@@ -48,7 +48,7 @@ jobs:
 
           # Theorem 1 crossover definition used in docs and code.
           crossover = gi.estimate_crossover_harmonic(max_N=120)
-          assert crossover == 26, crossover
+          assert crossover == 7, crossover
 
           # Energy concentration should stay in the expected band near 0.89.
           x = np.linspace(-np.pi, np.pi, 65536, endpoint=False)

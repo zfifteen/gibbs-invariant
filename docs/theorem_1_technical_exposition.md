@@ -54,11 +54,11 @@ Using the current implementation:
 
 `estimate_crossover_harmonic(...)` defines \(N_1\) as the first \(N\) where:
 
-1. pointwise Gibbs error as a fraction of jump height
+1. absolute pointwise Gibbs overshoot (`gibbs_overshoot(N) - 1`)
 2. exceeds global RMS residual error
 
-under plateau normalization \(\pm1\) (jump height \(2\)).
-With this convention, the square-wave estimate is \(N_1\approx26\).
+under plateau normalization \(\pm1\) (jump height \(2\)). Both quantities are in absolute amplitude units.
+With this convention, the square-wave estimate is \(N_1\approx7\).
 
 ## Falsification Criteria
 

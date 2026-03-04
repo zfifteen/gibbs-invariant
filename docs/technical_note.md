@@ -7,7 +7,7 @@ Date: 2026-03-04
 
 This technical note consolidates two linked invariants for truncated Fourier representations of piecewise-smooth periodic signals with jump discontinuities. The first invariant is an energy-allocation law: for fixed zone-width factor `alpha`, the fraction of residual `L^2` error inside shrinking jump neighborhoods converges to a nonzero constant `C(alpha)` as truncation order grows. In the repository's canonical square-wave normalization, the `alpha=1` concentration level is empirically near `0.89`. The second invariant is a coefficient-budget law: the cumulative absolute Fourier budget grows logarithmically for true-jump signals, and its per-doubling increment converges to a nonzero constant. In the same normalization, `Delta_N = R(2N)-R(N)` converges to `(2/pi) ln(2) = 0.4412712...`.
 
-Taken together, these invariants provide a practical control signal for algorithm design. Theorem 1 describes where residual error remains concentrated after global spectral refinement, and Theorem 2 describes whether jump-class structure is active in coefficient space. The code in this repository defines an operational crossover `N₁` as the first harmonic count where fixed pointwise Gibbs error (as a fraction of jump height) exceeds global RMS residual; in the canonical square-wave setting this occurs near `N₁ ~= 26`. This note summarizes definitions, asymptotic bridge arguments, numerical checks, and engineering interpretation under the repository's explicit normalization conventions.
+Taken together, these invariants provide a practical control signal for algorithm design. Theorem 1 describes where residual error remains concentrated after global spectral refinement, and Theorem 2 describes whether jump-class structure is active in coefficient space. The code in this repository defines an operational crossover `N₁` as the first harmonic count where absolute pointwise Gibbs overshoot (`gibbs_overshoot(N)-1`) exceeds global RMS residual; in the canonical square-wave setting this occurs near `N₁ ~= 7`. This note summarizes definitions, asymptotic bridge arguments, numerical checks, and engineering interpretation under the repository's explicit normalization conventions.
 
 ## 1. Setup and notation
 
@@ -166,20 +166,22 @@ Theorem 2 describes hidden representational cost. Even when pointwise waveform e
 
 The repository defines crossover `N₁` as the first truncation order `N` such that:
 
-- fixed pointwise Gibbs error fraction of jump height exceeds
+- absolute pointwise Gibbs overshoot exceeds
 - global RMS residual at that same `N`.
 
 In [gibbs_invariant.py](../gibbs_invariant.py), this appears in `estimate_crossover_harmonic(...)` using:
 
-`fixed_point_error = (gibbs_overshoot(N) - 1.0)/2.0`
+`fixed_point_error = gibbs_overshoot(N) - 1.0`
 
 and
 
 `rms = sqrt(mean((S_N f - f)^2))`.
 
+Both quantities are in absolute amplitude units, making the comparison dimensionally consistent.
+
 For canonical square-wave normalization, the measured crossover is
 
-`N₁ ~= 26`.
+`N₁ ~= 7`.
 
 This value is documented in [README](../README.md), [Theorem 1 statement](theorem_1_energy_invariant.md), and [Theorem 1 technical exposition](theorem_1_technical_exposition.md).
 
@@ -211,7 +213,7 @@ Under current normalization and current implementation:
 - pointwise Gibbs error fraction of jump height converges near `0.08949`,
 - `alpha=1` energy concentration stabilizes near `0.89`,
 - per-doubling radius increment converges near `0.4412712`,
-- operational crossover is `N₁ ~= 26`.
+- operational crossover is `N₁ ~= 7`.
 
 These are the key numeric anchors referenced across [README](../README.md), [Theorem 1 docs](theorem_1_energy_invariant.md), and [Theorem 2 docs](theorem_2_radius_invariant.md).
 
@@ -269,7 +271,7 @@ This perspective aligns with the repository's [MISSION](../MISSION.md) and bench
 
 This note intentionally does **not** claim universal deployment thresholds. In particular:
 
-- `N₁ ~= 26` is tied to canonical square-wave normalization and this repository's crossover definition.
+- `N₁ ~= 7` is tied to canonical square-wave normalization and this repository's crossover definition.
 - `threshold = 0.2` in `has_true_jumps(...)` is a default operational heuristic, not a universal boundary.
 - `0.89` concentration is an `alpha=1` anchor for specific conventions, not a context-free constant.
 
@@ -325,11 +327,11 @@ The table below collects constants used or verified in the canonical `+/-1` squa
 | Quantity | Exact / defining form | Numeric value (current) | Role |
 |---|---|---|---|
 | Wilbraham-Gibbs overshoot level (plateau basis) | `GIBBS_OVERSHOOT_LIMIT` | `1.178979744472167` | Pointwise asymptotic value near jump for plateau `1` |
-| Overshoot as jump-height fraction | `(GIBBS_OVERSHOOT_LIMIT-1)/2` | `0.089489872236` (`~0.08949`) | Theorem 1 pointwise anchor used in crossover |
+| Overshoot as jump-height fraction | `(GIBBS_OVERSHOOT_LIMIT-1)/2` | `0.089489872236` (`~0.08949`) | Theorem 1 asymptotic pointwise anchor (for reference) |
 | Radius doubling invariant | `(2/pi) ln(2)` | `0.441271200305` (`~0.4412712`) | Theorem 2 asymptotic increment target |
 | Radius asymptotic offset term | `(2/pi)*(2 ln(2)+gamma)` | `1.250009305807` | Constant in square-wave asymptotic fit |
 | Energy concentration anchor (`alpha=1`) | empirical `C(1)` in current runs | `~0.89` | Theorem 1 zone-energy fraction anchor |
-| Operational crossover harmonic count | first `N` with pointwise fraction > global RMS | `N₁ ~= 26` | Decision boundary in current implementation |
+| Operational crossover harmonic count | first `N` with absolute overshoot > global RMS | `N₁ ~= 7` | Decision boundary in current implementation |
 
 All values above are normalization-dependent. If amplitude scaling, jump height, truncation convention, or zone-width convention changes, constants may shift.
 
@@ -350,7 +352,7 @@ This appendix maps formal quantities in this note to implementation points in [g
 | Radius budget `R(N)` | `sum_{k<=N} |c_k|` | `square_wave_radii`, `sawtooth_radii`, `cumulative_radius_budget` |
 | Doubling increment `Delta_N` | `R(2N)-R(N)` | `radius_doubling_deltas(radii, min_n)` |
 | Jump-active detector | normalized recent `Delta_N` trend | `has_true_jumps(radii, plateau, threshold)` |
-| Operational crossover `N₁` | first `N` with pointwise fraction > global RMS | `estimate_crossover_harmonic(max_N)` |
+| Operational crossover `N₁` | first `N` with absolute overshoot > global RMS | `estimate_crossover_harmonic(max_N)` |
 | End-to-end verification and report | numerical tables + constants + robustness checks | `verify_invariants()` |
 
 For theorem-level details behind these routines, see [Theorem 1 technical exposition](theorem_1_technical_exposition.md), [Theorem 1 proof sketch](theorem_1_proof_sketch.md), and [Theorem 2 technical exposition](theorem_2_technical_exposition.md).

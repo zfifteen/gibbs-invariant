@@ -156,14 +156,14 @@ def sawtooth_energy_concentration_fraction(
     )
 
 def estimate_crossover_harmonic(max_N: int = 200) -> Optional[int]:
-    """Docs definition: first N where 8.95%-style pointwise error exceeds global RMS error."""
+    """Docs definition: first N where absolute pointwise Gibbs overshoot exceeds global RMS error."""
     x = np.linspace(-np.pi, np.pi, 131072, endpoint=False)
     target = square_wave(x)
     for N in range(2, max_N + 1):
         approx = square_wave_partial_sum(x, N)
         rms = float(np.sqrt(np.mean((approx - target) ** 2)))
-        # Docs compare pointwise Gibbs error as a fraction of jump height (2 for plateau=1).
-        fixed_point_error = (gibbs_overshoot(N) - 1.0) / 2.0
+        # Compare absolute overshoot (amplitude units) against absolute RMS (amplitude units).
+        fixed_point_error = gibbs_overshoot(N) - 1.0
         if fixed_point_error > rms:
             return N
     return None

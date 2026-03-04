@@ -12,7 +12,7 @@ This repository presents two linked theorems for piecewise-smooth periodic signa
 
 In short:
 
-**Theorem 1 — Gibbs Energy Invariant:** For Fourier truncation order `N`, an `N`-stable fraction `C(α)` of remaining L² error concentrates in shrinking neighborhoods around discontinuities (zone width `α·π/K(N)`, with `K(N)=2N+1` for odd-harmonic truncation and `K(N)=N` for full-harmonic truncation). For the unit square wave at `α=1`, this is approximately `0.89`. A computable crossover `N₁` marks where pointwise Gibbs error (as a fraction of jump height) exceeds global RMS error.
+**Theorem 1 — Gibbs Energy Invariant:** For Fourier truncation order `N`, an `N`-stable fraction `C(α)` of remaining L² error concentrates in shrinking neighborhoods around discontinuities (zone width `α·π/K(N)`, with `K(N)=2N+1` for odd-harmonic truncation and `K(N)=N` for full-harmonic truncation). For the unit square wave at `α=1`, this is approximately `0.89`. A computable crossover `N₁` marks where absolute pointwise Gibbs overshoot (`gibbs_overshoot(N)-1`) exceeds global RMS error.
 
 **Theorem 2 — Gibbs Radius Invariant:** In epicycle/Fourier-coefficient form, signals with true jumps require a cumulative radius budget that grows as `R(N) ~ (2/pi) ln(N) + C`. Under doubling, the increment converges to the closed-form constant `ΔR -> (2/pi) ln(2) ≈ 0.4413`. Continuous controls (for example triangle wave) have saturating budget and vanishing doubling increment.
 
@@ -46,7 +46,7 @@ For a piecewise-smooth signal with jump discontinuities, truncated to N Fourier 
 - For square-wave odd-harmonic truncation (`K(N)=2N+1`) at `α=1`, this concentration is **~0.89**
 - The concentration is **stable in `N` for fixed `α`**, and **changes with `α`**
 - Error density inside the zone scales as **O(N)**, compensating zone shrinkage
-- The crossover **N₁ ≈ 26** (unit square wave) marks the point at which pointwise Gibbs error (as a fraction of jump height) surpasses global RMS error — after which global refinement is structurally inefficient
+- The crossover **N₁ ≈ 7** (unit square wave) marks the point at which absolute pointwise Gibbs overshoot surpasses global RMS error — after which global refinement is structurally inefficient
 
 ### Radius Invariant
 For the same signal in epicycle form, the cumulative radius budget R(N) = Σ|cₖ|:
@@ -156,7 +156,7 @@ Expected verification markers in console output:
 - `Theorem 2 delta-per-doubling target: 0.441271200305`
 - `Theorem 1 overshoot target (plateau=1): 1.178979744472`
 - `Theorem 1 pointwise error as jump fraction: 0.089489872236`
-- `Estimated crossover N where pointwise Gibbs error > global RMS error: 26`
+- `Estimated crossover N where pointwise Gibbs error > global RMS error: 7`
 - `Additional discontinuous example (sawtooth):`
 - `Zone-width robustness check (square wave):`
 

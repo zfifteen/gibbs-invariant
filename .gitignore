@@ -1,3 +1,5 @@
 .idea/
 work/
 *.iml
+__pycache__/
+*.pyc

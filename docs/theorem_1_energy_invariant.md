@@ -39,10 +39,10 @@ For the unit square wave with \(\alpha=1\), numerical values in this repo stabil
 
 `estimate_crossover_harmonic(...)` defines \(N_1\) as the first \(N\) such that:
 
-- pointwise Gibbs error fraction of jump height exceeds
+- absolute pointwise Gibbs overshoot (`gibbs_overshoot(N) - 1`) exceeds
 - global RMS error of the \(N\)-term truncation.
 
-With the current normalization (plateau \(=\pm1\), jump height \(=2\)), this gives \(N_1 \approx 26\) for the square wave.
+With the current normalization (plateau \(=\pm1\), jump height \(=2\)), this gives \(N_1 \approx 7\) for the square wave.
 
 ## Robustness checks in code
 
