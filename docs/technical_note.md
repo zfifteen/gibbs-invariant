@@ -333,7 +333,27 @@ The table below collects constants used or verified in the canonical `+/-1` squa
 
 All values above are normalization-dependent. If amplitude scaling, jump height, truncation convention, or zone-width convention changes, constants may shift.
 
-## Appendix B: Mapping to repository functions
+## Appendix B: Proof Sketch for Energy Concentration Stability
+
+This appendix outlines the three-step argument that establishes `F_N(alpha) -> C(alpha)` in Theorem 1. See [theorem_1_proof_sketch.md](theorem_1_proof_sketch.md) for full details.
+
+**Step 1: Global tail energy scales as `1/K(N)`.**
+For piecewise-`C^1` (BV-sufficient) signals with jumps, Fourier coefficient asymptotics give `|c_k| ~ K/k`. By Parseval's theorem, the total truncation error energy satisfies
+`E_total(N) = C_tot / K(N) + o(1/K(N))`,
+where `C_tot` depends on jump heights and normalization but not on `N`.
+
+**Step 2: Near each jump, error follows a universal scaled Gibbs profile (Dirichlet-kernel scaling).**
+Using the Dirichlet-kernel representation `S_N f(x) = (1/2pi) integral f(y) D_N(x-y) dy`, decompose `f` into jump part and smooth remainder. Standard Gibbs scaling gives `e_N(x_j + u/K(N)) -> -Delta_j * g(u)` at leading order near each jump `x_j`. Here `g` is a fixed profile determined by the truncation convention; jump heights and locations enter only through `Delta_j` and `x_j`. The smooth background contributes only `o(1/K(N))` to zone energy.
+Away from jumps, the Dirichlet-kernel terms from distinct discontinuities carry oscillatory phase factors that decorrelate at leading order. This phase decorrelation makes mixed cross-terms negligible in the energy ratio, so the zone energy is asymptotically additive across jumps.
+
+**Step 3: Zone and complement energies split with the same `1/K(N)` denominator.**
+Substituting the scaled variable `x = x_j + u/K(N)` inside each zone of half-width `alpha*pi/K(N)`:
+`E_zone(N, alpha) = C_zone(alpha) / K(N) + o(1/K(N))`,
+where `C_zone(alpha) = sum_j Delta_j^2 * integral_{-alpha*pi}^{alpha*pi} g(u)^2 du`.
+The complement carries the remaining energy at the same `1/K(N)` scale. Since numerator and denominator share the same leading-order scale,
+`F_N(alpha) = E_zone(N, alpha) / E_total(N) -> C_zone(alpha) / C_tot = C(alpha) in (0,1)`.
+
+## Appendix C: Mapping to repository functions
 
 This appendix maps formal quantities in this note to implementation points in [gibbs_invariant.py](../gibbs_invariant.py).
 
