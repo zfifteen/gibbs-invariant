@@ -1,6 +1,6 @@
 # Two Computable Invariants for Fourier Approximation of Piecewise-Smooth Signals
 
-**Author:** Big D
+**Author:** D.A.L. III
 
 ---
 
