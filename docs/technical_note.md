@@ -6,7 +6,9 @@
 
 ## Abstract
 
-This note presents two linked, falsifiable invariants for Fourier partial sums of piecewise-smooth periodic signals. The **energy concentration invariant** (Theorem 1) shows that a stable fraction \(C(\alpha)\) of total \(L^2\) reconstruction error concentrates in shrinking neighborhoods of jump discontinuities; for the unit square wave at zone-width factor \(\alpha=1\), \(C(1)\approx 0.89\). The **radius budget invariant** (Theorem 2) shows that the cumulative Fourier coefficient magnitude grows logarithmically, with per-doubling increment \(\Delta R \to (2/\pi)\ln 2 \approx 0.4413\). Together they yield a crossover criterion: for the unit square wave, pointwise Gibbs error exceeds global RMS error at \(N_1 \approx 26\), and persistent \(\Delta R > 0.2\) past \(N\approx 50\) indicates true jump discontinuities. Both invariants are verified numerically for \(N=10\) through \(N=2{,}000\) with explicit falsification criteria. Single-command regeneration via `python3 gibbs_invariant.py` reproduces all figures and verification tables.
+This note presents two linked, falsifiable invariants for Fourier partial sums of piecewise-smooth periodic signals. The **energy concentration invariant** (Theorem 1) shows that a stable fraction \(C(\alpha)\) of total \(L^2\) reconstruction error concentrates in shrinking neighborhoods of jump discontinuities; for the unit square wave at zone-width factor \(\alpha=1\), \(C(1)\approx 0.89\). The **radius budget invariant** (Theorem 2) shows that the cumulative Fourier coefficient magnitude grows logarithmically, with per-doubling increment \(\Delta R \to (2/\pi)\ln 2 \approx 0.4413\).
+
+Together the two invariants yield a crossover criterion: for the unit square wave, pointwise Gibbs error exceeds global RMS error at \(N_1 \approx 26\). They also provide an operational decision rule: persistent \(\Delta R > 0.2\) past \(N\approx 50\) indicates true jump discontinuities. Both invariants are verified numerically for \(N=10\) through \(N=2{,}000\) with explicit falsification criteria. Single-command regeneration via `python3 gibbs_invariant.py` reproduces all figures and verification tables.
 
 ---
 
@@ -43,7 +45,7 @@ with residual \(e_N(x) = S_N f(x) - f(x)\).
 \[
 \Omega_N(\alpha) = \bigcup_{x_j\in J}\bigl\{x : |x-x_j|_{\mathbb{T}} \le \alpha\pi/K(N)\bigr\},
 \]
-where \(|\cdot|_{\mathbb{T}}\) denotes wrapped distance on the \(2\pi\)-torus: \(|x-x_j|_{\mathbb{T}} = \min(|x-x_j|, 2\pi - |x-x_j|)\).
+where \(|\cdot|_{\mathbb{T}}\) denotes wrapped distance on the \(2\pi\)-torus. For \(x,x_j\in[-\pi,\pi)\), this is \(|x-x_j|_{\mathbb{T}} = \min(|x-x_j|,\, 2\pi - |x-x_j|)\).
 
 **Cumulative radius budget.** Define
 \[
@@ -77,7 +79,7 @@ For the unit square wave (\(\pm 1\) plateau, jump height 2) with odd-harmonic tr
 
 | \(\alpha\) | \(C(\alpha)\) (approximate) |
 |---|---|
-| 0.5 | 0.86 |
+| 0.5 | 0.860 |
 | 1.0 | 0.895 |
 | 2.0 | 0.948 |
 
