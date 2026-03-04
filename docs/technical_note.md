@@ -6,7 +6,7 @@
 
 ## Abstract
 
-This note presents two linked, falsifiable invariants for Fourier partial sums of piecewise-smooth periodic signals. The **energy concentration invariant** (Theorem 1) shows that a stable fraction \(C(\alpha)\) of total \(L^2\) reconstruction error concentrates in shrinking neighborhoods of jump discontinuities; for the unit square wave at zone-width factor \(\alpha=1\), \(C(1)\approx 0.89\). The **radius budget invariant** (Theorem 2) shows that the cumulative Fourier coefficient magnitude grows logarithmically, with per-doubling increment \(\Delta R \to (2/\pi)\ln 2 \approx 0.4413\).
+This note presents two linked, falsifiable invariants for Fourier partial sums of piecewise-smooth periodic signals, in the sense of asymptotic \(N\)-invariance for jump-bearing signals. The **energy concentration invariant** (Theorem 1) shows that a stable fraction \(C(\alpha)\) of total \(L^2\) reconstruction error concentrates in shrinking neighborhoods of jump discontinuities; for the unit square wave at zone-width factor \(\alpha=1\), \(C(1)\approx 0.89\). The **radius budget invariant** (Theorem 2) shows that the cumulative Fourier coefficient magnitude grows logarithmically, with per-doubling increment \(\Delta R \to (2/\pi)\ln 2 \approx 0.4413\).
 
 Together the two invariants yield a crossover criterion: for the unit square wave, pointwise Gibbs error exceeds global RMS error at \(N_1 \approx 26\). They also provide an operational decision rule: persistent \(\Delta R > 0.2\) past \(N\approx 50\) indicates true jump discontinuities. Both invariants are verified numerically for \(N=10\) through \(N=2{,}000\) with explicit falsification criteria. Single-command regeneration via `python3 gibbs_invariant.py` reproduces all figures and verification tables.
 
@@ -14,9 +14,9 @@ Together the two invariants yield a crossover criterion: for the unit square wav
 
 ## 1. Introduction
 
-The Gibbs phenomenon — the persistent overshoot of Fourier partial sums near jump discontinuities — is conventionally treated as a limitation of spectral methods. This note reframes it as a **computable diagnostic**: two invariant quantities that together determine *when* jump structure is active in a signal and *where* residual error concentrates.
+The Gibbs phenomenon — the persistent overshoot of Fourier partial sums near jump discontinuities — is conventionally treated as a limitation of spectral methods. This note reframes it as a **computable diagnostic**: two invariant quantities that together determine *when* jump structure is active in a signal and *where* residual error concentrates. Here, “invariant” means an asymptotic limit quantity that is independent of truncation order \(N\), while depending on jump structure and truncation convention.
 
-The phenomenon was first observed by Wilbraham (1848) and independently by Gibbs (1899); the modern formalization is due to Hewitt and Hewitt (1979). Reconstruction methods that mitigate the effect include the Gegenbauer approach of Gottlieb and Shu (1997) and the mollifier framework of Tadmor (2007). These methods address the *consequences* of jump-induced spectral error; the present work addresses its *detection and quantification*.
+The phenomenon was first observed by Wilbraham (1848) and independently by Gibbs (1899); the modern formalization is due to Hewitt and Hewitt (1979). Reconstruction methods that mitigate the effect include the Gegenbauer approach of Gottlieb and Shu (1997) and the mollifier framework of Tadmor (2007). These methods address the *consequences* of jump-induced spectral error; the present work addresses its *detection and quantification*. Unlike standard edge detectors or mitigation-only heuristics, the focus here is asymptotic spectral diagnostics with explicit falsification and threshold-validation rules.
 
 What is new here is the identification of two linked, falsifiable invariants that operate at different levels of the approximation pipeline:
 
@@ -59,7 +59,7 @@ where \(c_k\) are the Fourier coefficient magnitudes in the chosen truncation co
 
 ### Statement
 
-For fixed \(\alpha>0\), define the concentration fraction
+Let \(f\) be \(2\pi\)-periodic, of bounded variation, with finitely many jump discontinuities, and piecewise \(C^1\) away from jumps. For fixed \(\alpha>0\), define the concentration fraction
 \[
 F_N(\alpha) = \frac{\int_{\Omega_N(\alpha)} |e_N(x)|^2\,dx}{\int_{-\pi}^{\pi} |e_N(x)|^2\,dx} = \frac{E_{\text{zone}}}{E_{\text{total}}}.
 \]
@@ -67,9 +67,9 @@ Then \(F_N(\alpha)\to C(\alpha)\in(0,1)\) as \(N\to\infty\). The limit depends o
 
 ### Mechanism
 
-Near each jump \(x_j\), the Dirichlet-kernel representation yields a universal scaled Gibbs profile: in the local variable \(u=K(N)(x-x_j)\), the truncation error satisfies \(e_N(x_j + u/K(N)) \to -\Delta_j\, g(u)\) at leading order, where \(g\) is a fixed profile determined by the truncation convention and \(\Delta_j\) is the jump height. The error amplitude is therefore \(O(1)\) inside the zone, while the change of variables \(dx = du/K(N)\) gives the integrated zone energy
+Near each jump \(x_j\), the Dirichlet-kernel representation yields a universal scaled Gibbs profile: in the local variable \(u=K(N)(x-x_j)\), the truncation error satisfies \(e_N(x_j + u/K(N)) \to -\Delta_j\, g(u)\) at leading order, where \(g\) is a fixed profile determined by the truncation convention and \(\Delta_j\) is the jump height. Intuitively, jump-zone error stays \(O(1)\) in amplitude over an \(O(1/K(N))\) zone width, so the corresponding integrated zone energy is \(O(1/K(N))\). With the same change of variables \(dx = du/K(N)\), this gives
 \[
-E_{\text{zone}}(N,\alpha) = \sum_j \int_{|u|\le\alpha\pi} \Delta_j^2\, g(u)^2\,\frac{du}{K(N)} + \text{l.o.t.} \sim \frac{C_{\text{zone}}(\alpha)}{K(N)}.
+E_{\text{zone}}(N,\alpha) = \sum_j \int_{|u|\le\alpha\pi} \Delta_j^2\, g(u)^2\,\frac{du}{K(N)} + o\!\left(\frac{1}{K(N)}\right).
 \]
 Away from jumps, phases decorrelate and the smooth-region error density is much lower. The total error energy also scales as \(E_{\text{total}}(N)\sim C_{\text{total}}/K(N)\) (from Parseval's theorem and coefficient asymptotics). Since both numerator and denominator share the same \(1/K(N)\) scale, their ratio converges.
 
@@ -87,7 +87,7 @@ These values are stable across \(N=64\) through \(N=1{,}024\) in the zone-width 
 
 ### Crossover \(N_1\)
 
-Define \(N_1\) as the first \(N\) where the pointwise Gibbs error as a fraction of jump height exceeds the global RMS error of the \(N\)-term truncation. Under plateau normalization \(\pm 1\):
+Define \(N_1\) as the first \(N\) where the pointwise Gibbs error as a fraction of jump height exceeds the global RMS error of the \(N\)-term truncation. Under canonical square-wave calibration with plateau normalization \(\pm 1\):
 \[
 N_1 \approx 26.
 \]
@@ -95,7 +95,7 @@ Below \(N_1\), global spectral refinement efficiently reduces total error. Above
 
 ### Falsification criterion
 
-For a sharp square wave at fixed \(\alpha\), if \(F_N(\alpha)\) decays monotonically toward zero rather than stabilizing near \(C(\alpha)\), the claim is falsified.
+For a sharp square wave at fixed \(\alpha\), if \(F_N(\alpha)\) either decays toward zero or fails to remain within a stable large-\(N\) band around \(C(\alpha)\), the claim is falsified.
 
 ---
 
@@ -103,7 +103,7 @@ For a sharp square wave at fixed \(\alpha\), if \(F_N(\alpha)\) decays monotonic
 
 ### Statement
 
-If \(f\) has at least one jump discontinuity, then \(|c_k|\sim A/k\) for large \(k\), giving
+Let \(f\) be \(2\pi\)-periodic, of bounded variation, piecewise \(C^1\) away from finitely many jump points, and with at least one jump discontinuity. Then \(|c_k|\sim A/k\) for large \(k\), for some \(A\) determined by jump data and normalization, giving
 \[
 R(N) = A\ln N + O(1),
 \]
@@ -133,15 +133,17 @@ The periodic sawtooth wave has full-harmonic \(1/k\) coefficients and exhibits t
 
 ### Falsification criterion
 
-For a sharp jump signal, if \(R(2N)-R(N)\) decays toward zero rather than settling near a nonzero constant, the claim is falsified.
+For a sharp jump signal, if \(R(2N)-R(N)\) decays toward zero rather than settling (up to finite-\(N\) tolerance) near a nonzero constant plateau, the claim is falsified. In the canonical square-wave verification, this means failure to settle near \((2/\pi)\ln 2\) within the tolerance band reported in Appendix C.
 
 ---
 
 ## 5. Decision Rules
 
+The thresholds in this section are empirically calibrated on canonical examples and are practical heuristics, not universal theorem constants.
+
 ### Regime detection (Theorem 2)
 
-Compute rolling doubling increments \(\Delta_N\). If the normalized score (recent average divided by plateau level) remains above a threshold of approximately 0.2 past moderate \(N\) (around 50), classify the signal as **jump-active**. If increments collapse toward zero, classify as **continuous/corner-only**.
+Compute rolling doubling increments \(\Delta_N\). If the normalized score (recent average divided by plateau level) remains above a threshold of approximately 0.2 past moderate \(N\) (around 50), classify the signal as **jump-active**. The 0.2 threshold is a conservative margin below the square-wave doubling plateau \((2/\pi)\ln 2 \approx 0.4413\), chosen for robust practical detection rather than optimality. If increments collapse toward zero, classify as **continuous/corner-only**.
 
 ### Error allocation (Theorem 1)
 
@@ -149,11 +151,12 @@ Once jumps are confirmed, the energy concentration fraction \(F_N(\alpha)\to C(\
 
 ### Crossover guard
 
-Below \(N_1\), global spectral refinement remains efficient across the entire domain. Above \(N_1\) with a jump-active classification, taper global refinement and route computational resources locally toward discontinuity neighborhoods.
+Below \(N_1\), global spectral refinement remains efficient across the entire domain. Above square-wave-calibrated \(N_1\) with a jump-active classification, taper global refinement and route computational resources locally toward discontinuity neighborhoods.
 
 ### Waste quantification
 
 At \(N=256\), the Gibbs zone with \(\alpha=1\) covers approximately \(p_N\approx 0.39\%\) of the domain while \(F_N(1)\approx 0.89\). Thus roughly 89% of the \(L^2\) error mass sits in under 1% of the domain area — quantifying the inefficiency of uniform global refinement for jump-bearing signals.
+In adaptive implementations, this supports reallocating budget toward localized edge refinement (or edge-aware sampling) instead of uniform global resolution increases.
 
 ---
 
@@ -164,6 +167,9 @@ At \(N=256\), the Gibbs zone with \(\alpha=1\) covers approximately \(p_N\approx
 - Python 3.9+, NumPy, Matplotlib
 - Single-command regeneration: `python3 gibbs_invariant.py`
 - All plots are saved to `assets/`
+- Verification targets and tolerances are summarized in Appendix C.
+- Energy concentration computations use a uniform grid with `x = np.linspace(-np.pi, np.pi, 65536, endpoint=False)`.
+- Reported energy integrals are computed by discrete uniform-grid summation (Riemann/trapezoidal-equivalent on the periodic grid).
 
 ### Theorem 1 verification
 
@@ -178,7 +184,7 @@ across \(N=10\) to \(N=2{,}000\).
 \(F_N(1)\) stabilizes near 0.89 across the same range.
 
 **Zone-width robustness sweep:**
-For \(\alpha\in\{0.5, 1.0, 2.0\}\), the concentration fraction is stable within each \(\alpha\) band across \(N=64\) through \(N=1{,}024\):
+For \(\alpha\in\{0.5, 1.0, 2.0\}\), the concentration fraction is stable within each \(\alpha\) band across \(N\in\{64, 128, 256, 512, 1024\}\):
 
 | \(\alpha\) | Mean \(F_N(\alpha)\) | Min | Max |
 |---|---|---|---|
@@ -202,7 +208,7 @@ Budget grows logarithmically; doubling increments persist at a nonzero level, co
 
 ### Crossover estimation
 
-\(N_1 = 26\) for the unit square wave under plateau normalization \(\pm 1\). Sensitivity to normalization: different amplitude conventions shift \(N_1\) but the qualitative crossover persists.
+\(N_1 = 26\) for the unit square wave under plateau normalization \(\pm 1\) (square-wave calibrated value). Sensitivity to normalization: different amplitude conventions shift \(N_1\) but the qualitative crossover persists.
 
 ### Expected console output
 
@@ -221,7 +227,7 @@ Along with verification tables for the square wave, sawtooth, and zone-width rob
 
 ## 7. Open Problems
 
-Generalization of \(N_1\) to the full piecewise-smooth function class (beyond square-wave normalization) remains open. Extension to two dimensions, where edge curves replace point discontinuities, would connect these invariants to image-processing applications. Noise robustness analysis — determining how additive noise modifies the detection thresholds of Theorem 2 and the concentration levels of Theorem 1 — is needed for practical deployment. Finally, a non-uniform sampling analog would extend the framework beyond the classical equispaced Fourier setting.
+Generalization of \(N_1\) to the full piecewise-smooth function class (beyond square-wave normalization) remains open. Extension to two dimensions, where edge curves replace point discontinuities, would connect these invariants to image-processing applications. Noise robustness analysis — determining how additive noise modifies the detection thresholds of Theorem 2 and the concentration levels of Theorem 1 — is needed for practical deployment. Finally, a non-uniform sampling analog would extend the framework beyond the classical equispaced Fourier setting. Potential links to sparse-edge/compressed-sensing diagnostics and to regularization selection for Gibbs-suppression methods are also promising directions.
 
 ---
 
