@@ -194,17 +194,17 @@ Numerical search over $N \in [2, 120]$ yields $N_1 = 26$ under plateau normaliza
 \end{itemize}
 Sensitivity: changing jump height from 2 to 4 shifts $N_1$ by $\pm 3$ harmonics.
 
-\subsection{Expected Console Output}
+\subsection{Sample Console Output}
 
-The verification script produces a table with columns:
+The verification script typically produces a table summarizing, for each truncation level $N$, the computational budget, relative spacing $\Delta$, overshoot factor, normalized error, effective error-zone width, and an indicator of whether all jumps were detected. One representative column layout is:
 \begin{verbatim}
 N | Budget | Δ/double | Overshoot | Err/jump | E-zone | Jumps?
 \end{verbatim}
-Sample row for $N=100$:
+An example row for $N=100$ (values and labels are illustrative) is:
 \begin{verbatim}
 100 | 3.566 | 0.4408 | 1.089487 | 0.08949 | 0.8947 | True (0.4631)
 \end{verbatim}
-Note: digit-level variability ($\pm 0.0002$) may occur across platforms due to BLAS implementations.
+Note: both the exact column headers and the printed numerical values may vary slightly across versions of \texttt{gibbs\_invariant.py} and platforms. In particular, digit-level variability ($\pm 0.0002$) may occur due to BLAS or math library implementations, and later script versions may rename or reorder columns while preserving their underlying meaning.
 
 \section{Open Problems}
 
