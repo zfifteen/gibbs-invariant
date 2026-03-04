@@ -67,9 +67,9 @@ Then \(F_N(\alpha)\to C(\alpha)\in(0,1)\) as \(N\to\infty\). The limit depends o
 
 ### Mechanism
 
-Near each jump \(x_j\), the truncation error follows a universal scaled Gibbs profile: in the local variable \(u=K(N)(x-x_j)\), the error density scales as \(O(N)\) because the missing harmonics align coherently. The zone width shrinks as \(O(1/N)\), so the integrated zone energy scales as
+Near each jump \(x_j\), the Dirichlet-kernel representation yields a universal scaled Gibbs profile: in the local variable \(u=K(N)(x-x_j)\), the truncation error satisfies \(e_N(x_j + u/K(N)) \to -\Delta_j\, g(u)\) at leading order, where \(g\) is a fixed profile determined by the truncation convention and \(\Delta_j\) is the jump height. The error amplitude is therefore \(O(1)\) inside the zone, while the change of variables \(dx = du/K(N)\) gives the integrated zone energy
 \[
-E_{\text{zone}}(N,\alpha) \sim \frac{C_{\text{zone}}(\alpha)}{K(N)}.
+E_{\text{zone}}(N,\alpha) = \sum_j \int_{|u|\le\alpha\pi} \Delta_j^2\, g(u)^2\,\frac{du}{K(N)} + \text{l.o.t.} \sim \frac{C_{\text{zone}}(\alpha)}{K(N)}.
 \]
 Away from jumps, phases decorrelate and the smooth-region error density is much lower. The total error energy also scales as \(E_{\text{total}}(N)\sim C_{\text{total}}/K(N)\) (from Parseval's theorem and coefficient asymptotics). Since both numerator and denominator share the same \(1/K(N)\) scale, their ratio converges.
 
