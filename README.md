@@ -18,6 +18,27 @@ In short:
 
 ---
 
+## Technical Note
+
+**NEW:** A comprehensive technical note is now available at [`docs/technical_note.tex`](docs/technical_note.tex).
+
+This LaTeX document provides:
+- Formal statements of both invariants with closed-form constants
+- Complete numerical verification methodology (N = 10 through N = 2,000)
+- Operational decision rules for adaptive signal processing
+- Three appendices with mathematical derivations and source listings
+
+**To build the PDF:**
+
+```bash
+cd docs
+make          # or: pdflatex technical_note.tex (twice)
+```
+
+See [`docs/README.md`](docs/README.md) for full build instructions and documentation overview.
+
+---
+
 ## Practical Implications
 
 These invariants provide two quantitative diagnostics for deciding when global spectral refinement stops being efficient and discontinuity-aware treatment is warranted.
@@ -169,6 +190,8 @@ The exact table values may vary at the last displayed digit by platform/BLAS imp
 | Document | Description |
 |---|---|
 | [Repository Overview](README.md) | Top-level overview of the two Gibbs invariants, why they matter, and how to navigate the repository. |
+| **[Technical Note (LaTeX)](docs/technical_note.tex)** | **Comprehensive technical note with formal theorem statements, proofs, and numerical verification.** |
+| [Documentation Overview](docs/README.md) | Build instructions for the technical note and documentation index. |
 | [Theorem 1: Energy Concentration Invariant](docs/theorem_1_energy_invariant.md) | Theorem 1 statement and implications for energy concentration of Fourier truncation error near discontinuities. |
 | [Theorem 1 Technical Exposition](docs/theorem_1_technical_exposition.md) | Full technical derivation and analysis of Theorem 1, including mechanism and falsification criteria. |
 | [Theorem 2: Radius Budget Invariant](docs/theorem_2_radius_invariant.md) | Theorem 2 statement and decision rule based on persistent per-doubling radius budget growth. |
@@ -203,6 +226,7 @@ The theoretical results are established for the canonical piecewise-smooth case 
 - [ ] 2D extension (edges replacing point discontinuities)  
 - [ ] Noise robustness analysis and modified detection thresholds  
 - [ ] Non-uniform sampling analog  
+- [x] **Technical note with formal statements and complete verification**
 - [ ] Formal submission
 
 ---
@@ -211,12 +235,15 @@ The theoretical results are established for the canonical piecewise-smooth case 
 
 If you use these results, please cite this repository until a formal paper is available.
 
-```
-@misc{gibbs-invariant,
-  title   = {The Gibbs Invariant: Energy Concentration and Radius Budget Theorems
-             for Fourier Representations of Piecewise-Smooth Signals},
-  year    = {2026},
-  url     = {https://github.com/zfifteen/gibbs-invariant}
+```bibtex
+@techreport{bigd2026gibbs,
+  author      = {Big D},
+  title       = {Two Computable Invariants for Fourier Approximation 
+                 of Piecewise-Smooth Signals},
+  institution = {GitHub},
+  year        = {2026},
+  month       = {March},
+  url         = {https://github.com/zfifteen/gibbs-invariant}
 }
 ```
 
