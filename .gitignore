@@ -1,3 +1,16 @@
 .idea/
 work/
 *.iml
+
+# LaTeX auxiliary files
+*.aux
+*.log
+*.out
+*.toc
+*.bbl
+*.blg
+*.nav
+*.snm
+*.synctex.gz
+*.fls
+*.fdb_latexmk
