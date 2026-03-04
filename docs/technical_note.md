@@ -258,7 +258,7 @@ The proof proceeds in three steps.
 **Step 1: Global tail energy scales as \(1/K(N)\).**
 For BV functions with jumps, the standard Fourier coefficient asymptotics give \(\hat{f}(k) = \sum_j \Delta_j e^{-ikx_j}/(2\pi ik) + O(1/k^2)\). By Parseval's theorem,
 \[
-E_{\text{total}}(N) = \sum_{|k|>K(N)} |\hat{f}(k)|^2 \sim \frac{C_{\text{total}}}{K(N)}.
+E_{\text{total}}(N) = \sum_{|k|\ge K(N)} |\hat{f}(k)|^2 \sim \frac{C_{\text{total}}}{K(N)}.
 \]
 
 **Step 2: Zone energy shares the same scale.**
