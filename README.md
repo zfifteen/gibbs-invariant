@@ -210,14 +210,24 @@ The theoretical results are established for the canonical piecewise-smooth case 
 
 ## Citation
 
-If you use these results, please cite this repository until a formal paper is available.
+If you use these results, cite this software release metadata from [`CITATION.cff`](CITATION.cff).
+
+Zenodo DOI status (first publication): **pending**.
+
+- Concept DOI: _to be assigned on first Zenodo publish_
+- Version DOI (`v0.1.0`): _to be assigned on first Zenodo publish_
+
+You can also use this BibTeX entry:
 
 ```
 @misc{gibbs-invariant,
-  title   = {The Gibbs Invariant: Energy Concentration and Radius Budget Theorems
-             for Fourier Representations of Piecewise-Smooth Signals},
-  year    = {2026},
-  url     = {https://github.com/zfifteen/gibbs-invariant}
+  author       = {Lopez, Dionisio Alberto III},
+  title        = {The Gibbs Invariant: Energy Concentration and Radius Budget Theorems
+                  for Fourier Representations of Piecewise-Smooth Signals},
+  year         = {2026},
+  version      = {v0.1.0},
+  howpublished = {\url{https://github.com/zfifteen/gibbs-invariant}},
+  note         = {Zenodo DOI pending first publication}
 }
 ```
 

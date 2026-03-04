@@ -1,0 +1,26 @@
+{
+  "title": "The Gibbs Invariant: Energy Concentration and Radius Budget Theorems for Fourier Representations of Piecewise-Smooth Signals",
+  "description": "Computable invariants for Fourier approximations of piecewise-smooth periodic signals with jump discontinuities. Includes theorem statements, technical expositions, numerical verification, and reproducible figure generation via gibbs_invariant.py.",
+  "upload_type": "software",
+  "license": "mit-license",
+  "creators": [
+    {
+      "name": "Lopez, Dionisio Alberto III"
+    }
+  ],
+  "keywords": [
+    "Gibbs phenomenon",
+    "Fourier series",
+    "spectral methods",
+    "signal processing",
+    "discontinuities",
+    "reproducible research"
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "https://github.com/zfifteen/gibbs-invariant",
+      "relation": "isSupplementTo",
+      "resource_type": "software"
+    }
+  ]
+}
