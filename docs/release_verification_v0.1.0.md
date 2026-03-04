@@ -5,8 +5,10 @@
 - Release tag: `v0.1.0` (pending tag creation)
 - Release date target: 2026-03-04
 - Repository: `https://github.com/zfifteen/gibbs-invariant`
-- Zenodo concept DOI: pending first publication
-- Zenodo version DOI: pending first publication
+- Technical note DOI (version): `10.5281/zenodo.18865671`
+- Technical note DOI (concept): pending/not captured
+- Software DOI (version): pending first software publication
+- Software DOI (concept): pending first software publication
 
 ## Reproducibility Commands
 
@@ -33,7 +35,13 @@ MPLBACKEND=Agg python3 gibbs_invariant.py
 - [x] `CITATION.cff` added
 - [x] `.zenodo.json` added
 - [x] README citation section updated for DOI placeholders
+- [x] Technical note PDF generated (`docs/technical_note.pdf`)
+- [x] Zenodo PDF metadata template added (`docs/zenodo_pdf_publication_metadata.md`)
+- [x] Zenodo publish runbook added (`docs/zenodo_publish_runbook.md`)
 - [ ] Annotated Git tag created and pushed
 - [ ] GitHub release published
-- [ ] Zenodo draft reviewed and published
+- [x] Zenodo technical-note publication draft reviewed and published
+- [x] PDF DOI wired into `.zenodo.json`
+- [ ] Zenodo software draft reviewed and published
+- [ ] PDF/software bidirectional related identifiers verified
 - [ ] DOI badge and links inserted into README

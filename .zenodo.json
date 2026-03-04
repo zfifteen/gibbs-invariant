@@ -21,6 +21,11 @@
       "identifier": "https://github.com/zfifteen/gibbs-invariant",
       "relation": "isSupplementTo",
       "resource_type": "software"
+    },
+    {
+      "identifier": "https://doi.org/10.5281/zenodo.18865671",
+      "relation": "isDocumentedBy",
+      "resource_type": "publication-technicalnote"
     }
   ]
 }

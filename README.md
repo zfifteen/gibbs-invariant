@@ -210,14 +210,15 @@ The theoretical results are established for the canonical piecewise-smooth case 
 
 ## Citation
 
-If you use these results, cite this software release metadata from [`CITATION.cff`](CITATION.cff).
+If you use these results, cite the technical note as the primary scholarly artifact and the software archive for reproducibility.
 
-Zenodo DOI status (first publication): **pending**.
+Zenodo DOI status: **technical note published; software archive pending**.
 
-- Concept DOI: _to be assigned on first Zenodo publish_
-- Version DOI (`v0.1.0`): _to be assigned on first Zenodo publish_
+- Technical note DOI (primary publication): `10.5281/zenodo.18865671` ([https://doi.org/10.5281/zenodo.18865671](https://doi.org/10.5281/zenodo.18865671))
+- Software concept DOI (all versions): _to be assigned on first software Zenodo publish_
+- Software version DOI (`v0.1.0`): _to be assigned on first software Zenodo publish_
 
-You can also use this BibTeX entry:
+Software citation metadata is in [`CITATION.cff`](CITATION.cff). You can also use this software BibTeX entry:
 
 ```
 @misc{gibbs-invariant,
