@@ -61,11 +61,11 @@ with residual $e_N(x) = S_N f(x) - f(x)$.
 \]
 where $|\cdot|_{\Torus}$ denotes wrapped torus distance: $|x - x_j|_{\Torus} = \min\{ |x - x_j|, 2\pi - |x - x_j| \}$.
 
-\textbf{Cumulative radius budget:} Let $c_k$ denote the magnitude of the $k$-th Fourier coefficient (in the square-wave case, $c_k = 4/(\pi(2k-1))$ for odd $k$). Define
+\textbf{Cumulative radius budget:} Let $c_k$ denote the (complex) $k$-th Fourier coefficient, and define the odd-harmonic magnitudes $r_m := |c_{2m-1}|$. In the square-wave case, this gives $r_m = 4/(\pi(2m-1))$ and $c_{2m} = 0$. Define
 \[
-R(N) = \sum_{k=1}^{N} |c_k|.
+R(N) = \sum_{m=1}^{N} r_m.
 \]
-This quantity measures the total "circle-length budget" consumed by the first $N$ harmonics.
+This quantity measures the total "circle-length budget" consumed by the first $N$ nonzero (odd) harmonics.
 
 \section{Theorem 1: Energy Concentration Invariant}
 
