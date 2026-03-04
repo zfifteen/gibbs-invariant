@@ -31,15 +31,15 @@ Together they provide a two-stage diagnostic: Theorem 2 detects the presence of 
 
 Let \(f\) be a \(2\pi\)-periodic, piecewise \(C^1\) function (bounded variation is sufficient) with finitely many jump locations \(J=\{x_j\}\subset[-\pi,\pi)\).
 
-**Fourier partial sum.** The truncated Fourier approximation is
+**Fourier partial sum.** Let \(\{a_k\}_{k\ge 0}\) and \(\{b_k\}_{k\ge 1}\) denote the real Fourier coefficients of \(f\). For an effective bandwidth \(K(N)\) (defined below), the truncated Fourier approximation is
 \[
-S_N f(x),
+S_N f(x) \;=\; \frac{a_0}{2} \;+\; \sum_{k=1}^{K(N)} \bigl(a_k \cos(kx) + b_k \sin(kx)\bigr),
 \]
 with residual \(e_N(x) = S_N f(x) - f(x)\).
 
 **Truncation conventions.** Two conventions are used:
-- **Odd-harmonic truncation** (square wave): effective bandwidth \(K(N)=2N+1\), using the first \(N\) odd harmonics.
-- **Full-harmonic truncation** (sawtooth): effective bandwidth \(K(N)=N\), using harmonics \(1,\dots,N\).
+- **Odd-harmonic truncation** (square wave): effective bandwidth \(K(N)=2N+1\). For the canonical square wave, only the odd-indexed coefficients \(a_{2m+1},b_{2m+1}\) with \(1 \le 2m+1 \le K(N)\) are nonzero, so the sum for \(S_N f\) above effectively reduces to the first \(N\) odd harmonics.
+- **Full-harmonic truncation** (sawtooth): effective bandwidth \(K(N)=N\), retaining all harmonics \(k=1,\dots,N\) in the sum for \(S_N f\).
 
 **Jump-zone definition.** For zone-width factor \(\alpha>0\), define the Gibbs zone
 \[
