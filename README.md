@@ -226,9 +226,10 @@ Software citation metadata is in [`CITATION.cff`](CITATION.cff). You can also us
   title        = {The Gibbs Invariant: Energy Concentration and Radius Budget Theorems
                   for Fourier Representations of Piecewise-Smooth Signals},
   year         = {2026},
-  version      = {v0.1.0},
+  version      = {v0.1.1},
+  doi          = {10.5281/zenodo.18869128},
   howpublished = {\url{https://github.com/zfifteen/gibbs-invariant}},
-  note         = {Zenodo DOI pending first publication}
+  note         = {Software archive DOI: 10.5281/zenodo.18869128}
 }
 ```
 

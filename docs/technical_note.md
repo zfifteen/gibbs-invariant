@@ -2,6 +2,9 @@
 
 **Author:** D.A.L. III
 
+**DOI (technical note):** [10.5281/zenodo.18865671](https://doi.org/10.5281/zenodo.18865671)  
+**Related software DOI:** [10.5281/zenodo.18869128](https://doi.org/10.5281/zenodo.18869128)
+
 ---
 
 ## Abstract
