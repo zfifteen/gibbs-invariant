@@ -5,17 +5,19 @@ Date: 2026-03-04
 
 ## Abstract
 
-This technical note consolidates two linked invariants for truncated Fourier representations of piecewise-smooth periodic signals with jump discontinuities. The first invariant is an energy-allocation law: for fixed zone-width factor `alpha`, the fraction of residual `L^2` error inside shrinking jump neighborhoods converges to a nonzero constant `C(alpha)` as truncation order grows. In the repository's canonical square-wave normalization, the `alpha=1` concentration level is empirically near `0.89`. The second invariant is a coefficient-budget law: the cumulative absolute Fourier budget grows logarithmically for true-jump signals, and its per-doubling increment converges to a nonzero constant. In the same normalization, `Delta_N = R(2N)-R(N)` converges to `(2/pi) ln(2) = 0.4412712...`.
+This technical note consolidates two linked invariants for truncated Fourier representations of piecewise-smooth periodic signals with jump discontinuities. The first invariant is an energy-allocation law: for fixed zone-width factor \(\alpha\), the fraction of residual \(L^2\) error inside shrinking jump neighborhoods converges to a nonzero constant \(C(\alpha)\) as truncation order grows. In the repository's canonical square-wave normalization, the \(\alpha=1\) concentration level is empirically near \(0.89\). The second invariant is a coefficient-budget law: the cumulative absolute Fourier budget grows logarithmically for true-jump signals, and its per-doubling increment converges to a nonzero constant. In the same normalization, \(\Delta_N = R(2N)-R(N)\) converges to \(\frac{2}{\pi}\ln 2 \approx 0.4412712\ldots\).
 
-Taken together, these invariants provide a practical control signal for algorithm design. Theorem 1 describes where residual error remains concentrated after global spectral refinement, and Theorem 2 describes whether jump-class structure is active in coefficient space. The code in this repository defines an operational crossover `N₁` as the first harmonic count where fixed pointwise Gibbs error (as a fraction of jump height) exceeds global RMS residual; in the canonical square-wave setting this occurs near `N₁ ~= 26`. This note summarizes definitions, asymptotic bridge arguments, numerical checks, and engineering interpretation under the repository's explicit normalization conventions.
+Taken together, these invariants provide a practical control signal for algorithm design. Theorem 1 describes where residual error remains concentrated after global spectral refinement, and Theorem 2 describes whether jump-class structure is active in coefficient space. The code in this repository defines an operational crossover \(N_1\) as the first harmonic count where fixed pointwise Gibbs error (as a fraction of jump height) exceeds global RMS residual; in the canonical square-wave setting this occurs near \(N_1 \approx 26\). This note summarizes definitions, asymptotic bridge arguments, numerical checks, and engineering interpretation under the repository's explicit normalization conventions.
 
 ## 1. Setup and notation
 
-We work on the `2pi`-periodic torus `T = [-pi, pi)` with wrapped distance `|.|_T`. Let `f : T -> R` be piecewise `C^1` (bounded variation is sufficient) with finitely many jumps at locations `J = {x_j}` and jump heights `{Delta_j}`.
+We work on the \(2\pi\)-periodic torus \(T = [-\pi, \pi)\) with wrapped distance \(|\cdot|_T\). Let \(f : T \to \mathbb{R}\) be piecewise \(C^1\) (bounded variation is sufficient) with finitely many jumps at locations \(J = \{x_j\}\) and jump heights \(\{\Delta_j\}\).
 
-For a truncation order `N`, denote the truncated reconstruction by `S_N f`, and define the residual
+For a truncation order \(N\), denote the truncated reconstruction by \(S_N f\), and define the residual
 
-`e_N(x) = S_N f(x) - f(x)`.
+\[
+e_N(x) = S_N f(x) - f(x).
+\]
 
 Two truncation conventions are used in this repository:
 
@@ -24,37 +26,51 @@ Two truncation conventions are used in this repository:
 
 To keep formulas aligned across conventions, define
 
-`K(N) = 2N+1` for odd-harmonic truncation, and `K(N) = N` for full-harmonic truncation.
+\[
+K(N) = \begin{cases} 2N+1 & \text{odd-harmonic truncation} \\ N & \text{full-harmonic truncation} \end{cases}
+\]
 
-This `K(N)` controls the jump-zone shrinkage rate and appears in all concentration statements.
+This \(K(N)\) controls the jump-zone shrinkage rate and appears in all concentration statements.
 
 Define total residual energy
 
-`E_total(N) = integral_T |e_N(x)|^2 dx`.
+\[
+E_{\text{total}}(N) = \int_T |e_N(x)|^2 \, dx.
+\]
 
-For zone-width factor `alpha > 0`, define jump neighborhoods
+For zone-width factor \(\alpha > 0\), define jump neighborhoods
 
-`Omega_N(alpha) = union_{x_j in J} { x in T : |x-x_j|_T <= alpha*pi/K(N) }`.
+\[
+\Omega_N(\alpha) = \bigcup_{x_j \in J} \bigl\{ x \in T : |x - x_j|_T \le \tfrac{\alpha\pi}{K(N)} \bigr\}.
+\]
 
 Define zone energy
 
-`E_zone(N, alpha) = integral_{Omega_N(alpha)} |e_N(x)|^2 dx`.
+\[
+E_{\text{zone}}(N, \alpha) = \int_{\Omega_N(\alpha)} |e_N(x)|^2 \, dx.
+\]
 
 Define the concentration fraction
 
-`F_N(alpha) = E_zone(N, alpha) / E_total(N)`.
+\[
+F_N(\alpha) = \frac{E_{\text{zone}}(N, \alpha)}{E_{\text{total}}(N)}.
+\]
 
-Theorem 1 concerns the asymptotic behavior of `F_N(alpha)`.
+Theorem 1 concerns the asymptotic behavior of \(F_N(\alpha)\).
 
-For coefficient-space analysis, let `c_k` denote Fourier coefficient magnitudes under the chosen representation and define radius budget
+For coefficient-space analysis, let \(c_k\) denote Fourier coefficient magnitudes under the chosen representation and define radius budget
 
-`R(N) = sum_{k=1..N} |c_k|`.
+\[
+R(N) = \sum_{k=1}^{N} |c_k|.
+\]
 
 Define the doubling increment
 
-`Delta_N = R(2N) - R(N)`.
+\[
+\Delta_N = R(2N) - R(N).
+\]
 
-Theorem 2 concerns the asymptotic behavior of `R(N)` and `Delta_N`.
+Theorem 2 concerns the asymptotic behavior of \(R(N)\) and \(\Delta_N\).
 
 ### Canonical normalization used throughout this note
 
@@ -71,21 +87,27 @@ Outside this normalization, constant values can change even when the qualitative
 
 ### Formal statement
 
-For piecewise-smooth periodic signals with finite jump set `J`, fixed `alpha > 0`, and truncation convention encoded by `K(N)`, the concentration fraction
+For piecewise-smooth periodic signals with finite jump set \(J\), fixed \(\alpha > 0\), and truncation convention encoded by \(K(N)\), the concentration fraction
 
-`F_N(alpha) = E_zone(N, alpha) / E_total(N)`
+\[
+F_N(\alpha) = \frac{E_{\text{zone}}(N, \alpha)}{E_{\text{total}}(N)}
+\]
 
-converges as `N -> infinity` to a nontrivial limit:
+converges as \(N \to \infty\) to a nontrivial limit:
 
-`F_N(alpha) -> C(alpha)` with `C(alpha) in (0,1)`.
+\[
+F_N(\alpha) \to C(\alpha), \quad C(\alpha) \in (0,1).
+\]
 
-The limit depends on `alpha` and normalization choices, but for fixed setup it is asymptotically stable in `N`.
+The limit depends on \(\alpha\) and normalization choices, but for fixed setup it is asymptotically stable in \(N\).
 
 ### Square-wave anchor in this repository
 
-For the canonical square wave and `alpha=1`, the measured concentration level stabilizes near
+For the canonical square wave and \(\alpha=1\), the measured concentration level stabilizes near
 
-`C(1) ~= 0.89`.
+\[
+C(1) \approx 0.89.
+\]
 
 This is documented and cross-checked in [Theorem 1 statement](theorem_1_energy_invariant.md), [proof sketch](theorem_1_proof_sketch.md), and [Theorem 1 technical exposition](theorem_1_technical_exposition.md).
 
@@ -93,13 +115,13 @@ This is documented and cross-checked in [Theorem 1 statement](theorem_1_energy_i
 
 The repository's theorem bridge is:
 
-1. **Tail-energy scale**: jump-class Fourier tails satisfy `|f_hat(k)| ~ 1/k`, so Parseval tail energy obeys
-   `E_total(N) = C_total/K(N) + o(1/K(N))`.
-2. **Jump-local scaling**: near each jump, residual follows a universal Gibbs profile under local variable `u = K(N)(x-x_j)`.
-3. **Zone-energy scale**: integrating over neighborhoods of width `alpha*pi/K(N)` gives
-   `E_zone(N, alpha) = C_zone(alpha)/K(N) + o(1/K(N))`.
-4. **Ratio convergence**: numerator and denominator share the same leading scale `1/K(N)`, so their ratio converges:
-   `F_N(alpha) -> C(alpha) = C_zone(alpha)/C_total`.
+1. **Tail-energy scale**: jump-class Fourier tails satisfy \(|\hat{f}(k)| \sim 1/k\), so Parseval tail energy obeys
+   \(E_{\text{total}}(N) = C_{\text{total}}/K(N) + o(1/K(N))\).
+2. **Jump-local scaling**: near each jump, residual follows a universal Gibbs profile under local variable \(u = K(N)(x-x_j)\).
+3. **Zone-energy scale**: integrating over neighborhoods of width \(\alpha\pi/K(N)\) gives
+   \(E_{\text{zone}}(N, \alpha) = C_{\text{zone}}(\alpha)/K(N) + o(1/K(N))\).
+4. **Ratio convergence**: numerator and denominator share the same leading scale \(1/K(N)\), so their ratio converges:
+   \(F_N(\alpha) \to C(\alpha) = C_{\text{zone}}(\alpha)/C_{\text{total}}\).
 
 The full bridge appears in [Theorem 1 proof sketch](theorem_1_proof_sketch.md) with normalization caveats and references.
 
@@ -107,8 +129,8 @@ The full bridge appears in [Theorem 1 proof sketch](theorem_1_proof_sketch.md) w
 
 Theorem 1 reframes Gibbs behavior from a local visualization artifact to an error-allocation law:
 
-- Jump zones shrink geometrically like `O(1/N)`.
-- Error density in those zones rises like `O(N)`.
+- Jump zones shrink geometrically like \(O(1/N)\).
+- Error density in those zones rises like \(O(N)\).
 - Their product (integrated energy share) remains asymptotically stable.
 
 Operationally, this means global spectral refinement eventually spends substantial compute to reduce error that is geographically sparse but energetically concentrated near discontinuities.
@@ -117,42 +139,54 @@ Operationally, this means global spectral refinement eventually spends substanti
 
 ### Formal statement
 
-For a periodic piecewise-smooth signal with at least one true jump and coefficient magnitudes `|c_k|`, define
+For a periodic piecewise-smooth signal with at least one true jump and coefficient magnitudes \(|c_k|\), define
 
-`R(N) = sum_{k=1..N} |c_k|`.
+\[
+R(N) = \sum_{k=1}^{N} |c_k|.
+\]
 
-When jumps are present, `|c_k| ~ K_coeff/k`, hence
+When jumps are present, \(|c_k| \sim K_{\text{coeff}}/k\), hence
 
-`R(N) = K_coeff ln N + O(1)`.
+\[
+R(N) = K_{\text{coeff}} \ln N + O(1).
+\]
 
 Equivalently, the doubling increment converges to a nonzero plateau:
 
-`Delta_N = R(2N) - R(N) -> K_coeff ln 2`.
+\[
+\Delta_N = R(2N) - R(N) \to K_{\text{coeff}} \ln 2.
+\]
 
 Thus persistent nonzero per-doubling increment is a jump-class signature in coefficient space.
 
 ### Square-wave normalization in this repository
 
-For canonical `+/-1` square-wave normalization with odd harmonics,
+For canonical \(\pm1\) square-wave normalization with odd harmonics,
 
-`r_m = 4/(pi*(2m-1))`, `m=1..N`,
+\[
+r_m = \frac{4}{\pi(2m-1)}, \quad m=1,\dots,N,
+\]
 
 so
 
-`R(N) ~ (2/pi) ln N + C`,
+\[
+R(N) \sim \frac{2}{\pi} \ln N + C,
+\]
 
 and
 
-`Delta_N -> (2/pi) ln(2) = 0.4412712...`.
+\[
+\Delta_N \to \frac{2}{\pi} \ln 2 \approx 0.4412712\ldots.
+\]
 
 This constant is encoded as `GIBBS_RADIUS_DELTA` in [gibbs_invariant.py](../gibbs_invariant.py) and discussed in [Theorem 2 statement](theorem_2_radius_invariant.md) and [Theorem 2 technical exposition](theorem_2_technical_exposition.md).
 
 ### Contrast with continuous controls
 
-For continuous or corner-only controls (for example triangle-like `1/k^2` decay), absolute coefficient tails are summable:
+For continuous or corner-only controls (for example triangle-like \(1/k^2\) decay), absolute coefficient tails are summable:
 
-- `R(N)` saturates toward a finite limit,
-- `Delta_N` decays toward `0`.
+- \(R(N)\) saturates toward a finite limit,
+- \(\Delta_N\) decays toward \(0\).
 
 This contrast is central to using Theorem 2 as a regime detector rather than a waveform-specific identity.
 
@@ -164,10 +198,10 @@ Theorem 2 describes hidden representational cost. Even when pointwise waveform e
 
 ### Crossover definition used in code/docs
 
-The repository defines crossover `N₁` as the first truncation order `N` such that:
+The repository defines crossover \(N_1\) as the first truncation order \(N\) such that:
 
 - fixed pointwise Gibbs error fraction of jump height exceeds
-- global RMS residual at that same `N`.
+- global RMS residual at that same \(N\).
 
 In [gibbs_invariant.py](../gibbs_invariant.py), this appears in `estimate_crossover_harmonic(...)` using:
 
@@ -177,26 +211,24 @@ and
 
 `rms = sqrt(mean((S_N f - f)^2))`.
 
-For canonical square-wave normalization, the measured crossover is
-
-`N₁ ~= 26`.
+For canonical square-wave normalization, the measured crossover is \(N_1 \approx 26\).
 
 This value is documented in [README](../README.md), [Theorem 1 statement](theorem_1_energy_invariant.md), and [Theorem 1 technical exposition](theorem_1_technical_exposition.md).
 
 ### Why `N₁` matters operationally
 
-`N₁` is not a universal mathematical constant. It is an implementation convention that turns asymptotic structure into a decision boundary:
+\(N_1\) is not a universal mathematical constant. It is an implementation convention that turns asymptotic structure into a decision boundary:
 
-1. **Below `N₁`**: global harmonic refinement remains broadly productive.
-2. **Near/above `N₁`**: additional global terms disproportionately service jump-local residual structure.
-3. **Above `N₁` with jump-active signal**: prefer discontinuity-aware routing (edge-local correction, targeted metrics, guarded mode switching).
+1. **Below \(N_1\)**: global harmonic refinement remains broadly productive.
+2. **Near/above \(N_1\)**: additional global terms disproportionately service jump-local residual structure.
+3. **Above \(N_1\) with jump-active signal**: prefer discontinuity-aware routing (edge-local correction, targeted metrics, guarded mode switching).
 
 ### Coupling Theorem 1 and Theorem 2 in a policy
 
 A practical two-signal policy is:
 
-- Use Theorem 2 feature (`Delta_N` or proxy) to detect jump-active regime.
-- Use Theorem 1 crossover logic (`N₁` analog) to decide when global refinement should taper.
+- Use Theorem 2 feature (\(\Delta_N\) or proxy) to detect jump-active regime.
+- Use Theorem 1 crossover logic (\(N_1\) analog) to decide when global refinement should taper.
 
 This gives a simple control rule: detect jump-class structure, then redirect compute from uniform global refinement toward local discontinuity treatment.
 
@@ -208,21 +240,21 @@ This repository provides direct numerical checks in [gibbs_invariant.py](../gibb
 
 Under current normalization and current implementation:
 
-- pointwise Gibbs error fraction of jump height converges near `0.08949`,
-- `alpha=1` energy concentration stabilizes near `0.89`,
-- per-doubling radius increment converges near `0.4412712`,
-- operational crossover is `N₁ ~= 26`.
+- pointwise Gibbs error fraction of jump height converges near \(0.08949\),
+- \(\alpha=1\) energy concentration stabilizes near \(0.89\),
+- per-doubling radius increment converges near \(0.4412712\),
+- operational crossover is \(N_1 \approx 26\).
 
 These are the key numeric anchors referenced across [README](../README.md), [Theorem 1 docs](theorem_1_energy_invariant.md), and [Theorem 2 docs](theorem_2_radius_invariant.md).
 
 ### Representative observed behavior
 
-For increasing `N` (square-wave mode):
+For increasing \(N\) (square-wave mode):
 
-- overshoot-derived jump fraction quickly settles near `0.08949`,
-- `E_zone/E_total` for `alpha=1` sits in a narrow band around `0.89-0.90`,
-- `Delta_N` rapidly approaches `0.4412712`,
-- jump classifier based on normalized recent `Delta_N` exceeds default threshold once enough scales are available.
+- overshoot-derived jump fraction quickly settles near \(0.08949\),
+- \(E_{\text{zone}}/E_{\text{total}}\) for \(\alpha=1\) sits in a narrow band around \(0.89\)–\(0.90\),
+- \(\Delta_N\) rapidly approaches \(0.4412712\),
+- jump classifier based on normalized recent \(\Delta_N\) trend exceeds default threshold once enough scales are available.
 
 Additional discontinuous control (periodic sawtooth) also shows persistent nonzero doubling increments and high jump-zone concentration, supporting that invariants track jump regularity class rather than one specific waveform.
 
@@ -230,15 +262,15 @@ Additional discontinuous control (periodic sawtooth) also shows persistent nonze
 
 The repository's claims are intentionally falsifiable and should be treated as such in every rerun:
 
-- If `F_N(alpha)` for a sharp jump signal and fixed `alpha` decays persistently toward zero as `N` increases, Theorem 1 behavior is not supported for that setup.
-- If `Delta_N` for a jump signal collapses toward zero with increasing `N`, Theorem 2 jump-class signature is not supported for that setup.
+- If \(F_N(\alpha)\) for a sharp jump signal and fixed \(\alpha\) decays persistently toward zero as \(N\) increases, Theorem 1 behavior is not supported for that setup.
+- If \(\Delta_N\) for a jump signal collapses toward zero with increasing \(N\), Theorem 2 jump-class signature is not supported for that setup.
 - If measured constants drift materially after code changes (beyond expected floating-point/platform variation), treat this as a regression candidate and inspect normalization/truncation conventions first.
 
 The check is not whether every decimal is identical; the check is whether the asymptotic pattern remains stable and consistent with the declared convention.
 
 ### Zone-width robustness
 
-The code also reports `alpha`-dependent concentration means for square wave (for example around `0.860` at `alpha=0.5`, around `0.895` at `alpha=1.0`, and around `0.948` at `alpha=2.0` in current runs). This is expected: Theorem 1 claims convergence to `C(alpha)`, not one universal constant across all `alpha`.
+The code also reports \(\alpha\)-dependent concentration means for square wave (for example around \(0.860\) at \(\alpha=0.5\), around \(0.895\) at \(\alpha=1.0\), and around \(0.948\) at \(\alpha=2.0\) in current runs). This is expected: Theorem 1 claims convergence to \(C(\alpha)\), not one universal constant across all \(\alpha\).
 
 ### Reproducibility command
 
@@ -269,9 +301,9 @@ This perspective aligns with the repository's [MISSION](../MISSION.md) and bench
 
 This note intentionally does **not** claim universal deployment thresholds. In particular:
 
-- `N₁ ~= 26` is tied to canonical square-wave normalization and this repository's crossover definition.
+- \(N_1 \approx 26\) is tied to canonical square-wave normalization and this repository's crossover definition.
 - `threshold = 0.2` in `has_true_jumps(...)` is a default operational heuristic, not a universal boundary.
-- `0.89` concentration is an `alpha=1` anchor for specific conventions, not a context-free constant.
+- \(0.89\) concentration is an \(\alpha=1\) anchor for specific conventions, not a context-free constant.
 
 For application transfer (JPEG blocks, MDCT frames, MRI slices, PDE states), thresholds must be calibrated against corpus-specific objectives and failure modes, consistent with the "instrument -> calibrate -> guard -> benchmark" path in [industry integration guide](industry/INTEGRATION_GUIDE.md).
 
@@ -326,10 +358,10 @@ The table below collects constants used or verified in the canonical `+/-1` squa
 |---|---|---|---|
 | Wilbraham-Gibbs overshoot level (plateau basis) | `GIBBS_OVERSHOOT_LIMIT` | `1.178979744472167` | Pointwise asymptotic value near jump for plateau `1` |
 | Overshoot as jump-height fraction | `(GIBBS_OVERSHOOT_LIMIT-1)/2` | `0.089489872236` (`~0.08949`) | Theorem 1 pointwise anchor used in crossover |
-| Radius doubling invariant | `(2/pi) ln(2)` | `0.441271200305` (`~0.4412712`) | Theorem 2 asymptotic increment target |
-| Radius asymptotic offset term | `(2/pi)*(2 ln(2)+gamma)` | `1.250009305807` | Constant in square-wave asymptotic fit |
-| Energy concentration anchor (`alpha=1`) | empirical `C(1)` in current runs | `~0.89` | Theorem 1 zone-energy fraction anchor |
-| Operational crossover harmonic count | first `N` with pointwise fraction > global RMS | `N₁ ~= 26` | Decision boundary in current implementation |
+| Radius doubling invariant | \(\frac{2}{\pi}\ln 2\) | `0.441271200305` (`~0.4412712`) | Theorem 2 asymptotic increment target |
+| Radius asymptotic offset term | \(\frac{2}{\pi}(2\ln 2+\gamma)\) | `1.250009305807` | Constant in square-wave asymptotic fit |
+| Energy concentration anchor (`alpha=1`) | empirical \(C(1)\) in current runs | `~0.89` | Theorem 1 zone-energy fraction anchor |
+| Operational crossover harmonic count | first \(N\) with pointwise fraction > global RMS | \(N_1 \approx 26\) | Decision boundary in current implementation |
 
 All values above are normalization-dependent. If amplitude scaling, jump height, truncation convention, or zone-width convention changes, constants may shift.
 
@@ -339,18 +371,18 @@ This appendix maps formal quantities in this note to implementation points in [g
 
 | Concept | Formula / definition | Implementation mapping |
 |---|---|---|
-| Square-wave truncation | odd-harmonic partial sum for `N` terms | `square_wave_partial_sum(x, N, amplitude)` |
-| Residual `e_N` | `S_N f - f` | computed inline in `verify_invariants()` and helper functions |
+| Square-wave truncation | odd-harmonic partial sum for \(N\) terms | `square_wave_partial_sum(x, N, amplitude)` |
+| Residual `e_N` | \(S_N f - f\) | computed inline in `verify_invariants()` and helper functions |
 | Pointwise Gibbs level | local max near jump | `gibbs_overshoot(N, ...)` |
-| Pointwise jump fraction | `(gibbs_overshoot(N)-1)/2` | derived in `plot_energy_invariant()` and `verify_invariants()` |
-| Jump zones `Omega_N(alpha)` | wrapped neighborhoods of width `alpha*pi/K(N)` | `energy_concentration_fraction_for_signal(..., zone_width_factor, harmonic_bandwidth)` |
-| Concentration fraction `F_N(alpha)` | `E_zone/E_total` | `energy_concentration_fraction(...)` (square-wave specialization) |
+| Pointwise jump fraction | \((\text{gibbs\_overshoot}(N)-1)/2\) | derived in `plot_energy_invariant()` and `verify_invariants()` |
+| Jump zones \(\Omega_N(\alpha)\) | wrapped neighborhoods of width \(\alpha\pi/K(N)\) | `energy_concentration_fraction_for_signal(..., zone_width_factor, harmonic_bandwidth)` |
+| Concentration fraction \(F_N(\alpha)\) | \(E_{\text{zone}}/E_{\text{total}}\) | `energy_concentration_fraction(...)` (square-wave specialization) |
 | Generic concentration (other jump signals) | same ratio with custom target and partial sum | `energy_concentration_fraction_for_signal(...)` |
 | Sawtooth verification path | discontinuous non-square control | `sawtooth_wave`, `sawtooth_partial_sum`, `sawtooth_energy_concentration_fraction` |
-| Radius budget `R(N)` | `sum_{k<=N} |c_k|` | `square_wave_radii`, `sawtooth_radii`, `cumulative_radius_budget` |
-| Doubling increment `Delta_N` | `R(2N)-R(N)` | `radius_doubling_deltas(radii, min_n)` |
-| Jump-active detector | normalized recent `Delta_N` trend | `has_true_jumps(radii, plateau, threshold)` |
-| Operational crossover `N₁` | first `N` with pointwise fraction > global RMS | `estimate_crossover_harmonic(max_N)` |
+| Radius budget \(R(N)\) | \(\sum_{k \le N} |c_k|\) | `square_wave_radii`, `sawtooth_radii`, `cumulative_radius_budget` |
+| Doubling increment \(\Delta_N\) | \(R(2N)-R(N)\) | `radius_doubling_deltas(radii, min_n)` |
+| Jump-active detector | normalized recent \(\Delta_N\) trend | `has_true_jumps(radii, plateau, threshold)` |
+| Operational crossover \(N_1\) | first \(N\) with pointwise fraction > global RMS | `estimate_crossover_harmonic(max_N)` |
 | End-to-end verification and report | numerical tables + constants + robustness checks | `verify_invariants()` |
 
 For theorem-level details behind these routines, see [Theorem 1 technical exposition](theorem_1_technical_exposition.md), [Theorem 1 proof sketch](theorem_1_proof_sketch.md), and [Theorem 2 technical exposition](theorem_2_technical_exposition.md).
