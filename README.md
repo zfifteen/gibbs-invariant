@@ -169,6 +169,7 @@ The exact table values may vary at the last displayed digit by platform/BLAS imp
 | Document | Description |
 |---|---|
 | [Repository Overview](README.md) | Top-level overview of the two Gibbs invariants, why they matter, and how to navigate the repository. |
+| [Technical Note](docs/technical_note.md) | Self-contained technical note: both invariants, proofs, decision rules, numerical verification, and appendices. |
 | [Theorem 1: Energy Concentration Invariant](docs/theorem_1_energy_invariant.md) | Theorem 1 statement and implications for energy concentration of Fourier truncation error near discontinuities. |
 | [Theorem 1 Technical Exposition](docs/theorem_1_technical_exposition.md) | Full technical derivation and analysis of Theorem 1, including mechanism and falsification criteria. |
 | [Theorem 2: Radius Budget Invariant](docs/theorem_2_radius_invariant.md) | Theorem 2 statement and decision rule based on persistent per-doubling radius budget growth. |
