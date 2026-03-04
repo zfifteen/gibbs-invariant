@@ -212,11 +212,11 @@ The theoretical results are established for the canonical piecewise-smooth case 
 
 If you use these results, cite the technical note as the primary scholarly artifact and the software archive for reproducibility.
 
-Zenodo DOI status: **technical note published; software archive pending**.
+Zenodo DOI status: **technical note and software archive published**.
 
 - Technical note DOI (primary publication): `10.5281/zenodo.18865671` ([https://doi.org/10.5281/zenodo.18865671](https://doi.org/10.5281/zenodo.18865671))
-- Software concept DOI (all versions): _to be assigned on first software Zenodo publish_
-- Software version DOI (`v0.1.0`): _to be assigned on first software Zenodo publish_
+- Software concept DOI (all versions): `10.5281/zenodo.18869127` ([https://doi.org/10.5281/zenodo.18869127](https://doi.org/10.5281/zenodo.18869127))
+- Software version DOI (`v0.1.1`): `10.5281/zenodo.18869128` ([https://doi.org/10.5281/zenodo.18869128](https://doi.org/10.5281/zenodo.18869128))
 
 Software citation metadata is in [`CITATION.cff`](CITATION.cff). You can also use this software BibTeX entry:
 

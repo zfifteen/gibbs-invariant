@@ -2,13 +2,13 @@
 
 ## Publication Metadata
 
-- Release tag: `v0.1.0` (pending tag creation)
+- Release tags: `v0.1.0` (initial) and `v0.1.1` (Zenodo ingestion trigger)
 - Release date target: 2026-03-04
 - Repository: `https://github.com/zfifteen/gibbs-invariant`
 - Technical note DOI (version): `10.5281/zenodo.18865671`
-- Technical note DOI (concept): pending/not captured
-- Software DOI (version): pending first software publication
-- Software DOI (concept): pending first software publication
+- Technical note DOI (concept): `10.5281/zenodo.18865670`
+- Software DOI (version): `10.5281/zenodo.18869128` (`v0.1.1`)
+- Software DOI (concept): `10.5281/zenodo.18869127`
 
 ## Reproducibility Commands
 
@@ -38,10 +38,10 @@ MPLBACKEND=Agg python3 gibbs_invariant.py
 - [x] Technical note PDF generated (`docs/technical_note.pdf`)
 - [x] Zenodo PDF metadata template added (`docs/zenodo_pdf_publication_metadata.md`)
 - [x] Zenodo publish runbook added (`docs/zenodo_publish_runbook.md`)
-- [ ] Annotated Git tag created and pushed
-- [ ] GitHub release published
+- [x] Annotated git tags created and pushed (`v0.1.0`, `v0.1.1`)
+- [x] GitHub releases published (`v0.1.0`, `v0.1.1`)
 - [x] Zenodo technical-note publication draft reviewed and published
 - [x] PDF DOI wired into `.zenodo.json`
-- [ ] Zenodo software draft reviewed and published
-- [ ] PDF/software bidirectional related identifiers verified
-- [ ] DOI badge and links inserted into README
+- [x] Zenodo software draft reviewed and published
+- [ ] PDF/software bidirectional related identifiers verified (pending reverse link update on technical-note record)
+- [x] DOI links inserted into README
