@@ -2,3 +2,4 @@
 work/
 *.iml
 __pycache__/
+.venv/
