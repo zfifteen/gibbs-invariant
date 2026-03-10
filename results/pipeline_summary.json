@@ -1,0 +1,178 @@
+{
+  "phase2": {
+    "phase2_artifacts": {
+      "invariant_residuals_csv": "/Users/velocityworks/IdeaProjects/gibbs-invariant/results/invariant_residuals.csv",
+      "overshoot_profiles_json": "/Users/velocityworks/IdeaProjects/gibbs-invariant/results/overshoot_profiles.json",
+      "energy_maps_npy": "/Users/velocityworks/IdeaProjects/gibbs-invariant/results/energy_maps.npy",
+      "canonical_plot": "/Users/velocityworks/IdeaProjects/gibbs-invariant/results/invariant_convergence.png"
+    },
+    "phase2b_gates": {
+      "all_pass": true,
+      "noise_robustness": {
+        "pass": true,
+        "mean_score_drift": 0.3302279886096575,
+        "max_invariant_residual_drift": 0.20965705166537357,
+        "production_mean_score_drift": 0.06944088681615687,
+        "production_max_invariant_residual_drift": 0.20965705166537357,
+        "active_rate": 1.0,
+        "rows": [
+          {
+            "snr_db": 30.0,
+            "jump_active": 1.0,
+            "jump_score_drift": 0.028989128575061168,
+            "invariant_residual_drift": 0.12334053650839491
+          },
+          {
+            "snr_db": 20.0,
+            "jump_active": 1.0,
+            "jump_score_drift": 0.10989264505725257,
+            "invariant_residual_drift": 0.20965705166537357
+          },
+          {
+            "snr_db": 10.0,
+            "jump_active": 1.0,
+            "jump_score_drift": 0.3983938191656673,
+            "invariant_residual_drift": 0.022344728659752677
+          },
+          {
+            "snr_db": 5.0,
+            "jump_active": 1.0,
+            "jump_score_drift": 0.7836363616406489,
+            "invariant_residual_drift": 0.10989110968388743
+          }
+        ]
+      },
+      "nonuniform_sampling": {
+        "pass": true,
+        "invariant_drift": 0.007509703552440322,
+        "energy_drift": 0.014621677099712849,
+        "jump_score_drift": 0.019520967386264243
+      },
+      "baseline_comparison": {
+        "pass": true,
+        "metrics": {
+          "gibbs": {
+            "threshold": 0.24575395043640164,
+            "precision": 0.9807692307692307,
+            "recall": 1.0,
+            "f1": 0.9902912621359222,
+            "auroc": 1.0,
+            "prauc": 1.0
+          },
+          "tv": {
+            "threshold": 5.182048941548906,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "auroc": 1.0,
+            "prauc": 1.0
+          },
+          "wavelet": {
+            "threshold": 0.021191283598829585,
+            "precision": 0.4782608695652174,
+            "recall": 0.8627450980392157,
+            "f1": 0.6153846153846154,
+            "auroc": 0.6198479391756702,
+            "prauc": 0.6899328647628947
+          }
+        },
+        "measurable_win": true,
+        "non_win_cases": [
+          "smooth_65"
+        ]
+      }
+    }
+  },
+  "phase3": {
+    "pass": true,
+    "lambda_weight": 0.35,
+    "smooth_tolerance": 0.02,
+    "task_pass_count": 1,
+    "max_smooth_regression": 0.008984470409808359,
+    "non_win_tasks": [
+      "denoising",
+      "truncated_fourier_reconstruction"
+    ],
+    "tasks": {
+      "denoising": {
+        "baseline_n": 32,
+        "baseline_beta": 0.0,
+        "constrained_n": 32,
+        "constrained_beta": 0.0,
+        "baseline_mse": 0.013863902246776322,
+        "constrained_mse": 0.013863902246776322,
+        "baseline_edge_mse": 0.14972162239000353,
+        "constrained_edge_mse": 0.14972162239000353,
+        "baseline_smooth_mse": 0.002194257144335809,
+        "constrained_smooth_mse": 0.002194257144335809,
+        "edge_improvement": 0.0,
+        "smooth_regression": 0.0,
+        "pass": false
+      },
+      "truncated_fourier_reconstruction": {
+        "baseline_n": 32,
+        "baseline_beta": 0.0,
+        "constrained_n": 8,
+        "constrained_beta": 0.0,
+        "baseline_mse": 0.01686948499029295,
+        "constrained_mse": 0.050399700526305366,
+        "baseline_edge_mse": 0.18977754666425842,
+        "constrained_edge_mse": 0.5090687208917575,
+        "baseline_smooth_mse": 0.00201736092285795,
+        "constrained_smooth_mse": 0.011001831332666308,
+        "edge_improvement": -0.3192911742274991,
+        "smooth_regression": 0.008984470409808359,
+        "pass": false
+      },
+      "edge_preserving_smoothing": {
+        "baseline_n": 48,
+        "baseline_beta": 0.0,
+        "constrained_n": 48,
+        "constrained_beta": 0.75,
+        "baseline_mse": 0.008870219194336787,
+        "constrained_mse": 0.003096184655453661,
+        "baseline_edge_mse": 0.10116467772101653,
+        "constrained_edge_mse": 0.028169475649210095,
+        "baseline_smooth_mse": 0.0009424873378563428,
+        "constrained_smooth_mse": 0.0009424873378563428,
+        "edge_improvement": 0.07299520207180643,
+        "smooth_regression": 0.0,
+        "pass": true
+      }
+    }
+  },
+  "phase4": {
+    "weights": {
+      "fft_dependency": 0.35,
+      "spectral_processing_intensity": 0.25,
+      "discontinuity_frequency": 0.2,
+      "artifact_sensitivity": 0.2
+    },
+    "phase2b_pass": true,
+    "phase3_pass": true,
+    "shortlist": [
+      {
+        "name": "mozjpeg",
+        "repo_url": "https://github.com/mozilla/mozjpeg",
+        "score": 0.253
+      },
+      {
+        "name": "opensbli",
+        "repo_url": "https://github.com/opensbli/opensbli",
+        "score": 0.253
+      },
+      {
+        "name": "libwebp",
+        "repo_url": "https://github.com/webmproject/libwebp",
+        "score": 0.199
+      }
+    ],
+    "selected_target": {
+      "name": "mozjpeg",
+      "repo_url": "https://github.com/mozilla/mozjpeg",
+      "score": 0.253
+    },
+    "selection_unblocked": true,
+    "output_csv": "/Users/velocityworks/IdeaProjects/gibbs-invariant/results/candidate_rankings.csv"
+  }
+}

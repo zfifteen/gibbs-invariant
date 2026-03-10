@@ -1,0 +1,21 @@
+{
+  "id": "bandlimited_edge",
+  "title": "Smooth Impostor Rejection",
+  "signal_family": "bandlimited_edge",
+  "snr_db": 35.0,
+  "jitter_fraction": 0.0,
+  "n_values": [16, 32, 64, 96],
+  "alpha": 1.0,
+  "jump_threshold": 0.2,
+  "cost_model": {
+    "edge_weight": 1.0,
+    "smooth_weight": 0.25
+  },
+  "script": [
+    {
+      "t_sec": 0.0,
+      "action": "set_scene",
+      "value": "smooth_impostor_rejection"
+    }
+  ]
+}

@@ -164,6 +164,59 @@ The exact table values may vary at the last displayed digit by platform/BLAS imp
 
 ---
 
+## v1 APIs and Experiment Pipeline
+
+The repository now provides an importable package API:
+
+```python
+from gibbs_invariant import GibbsConfig, detect_gibbs, risk
+
+cfg = GibbsConfig(n_values=(16, 32, 64, 96), noise_policy="robust")
+report = detect_gibbs(signal, config=cfg)
+risk_report = risk(coefficients)
+```
+
+`GibbsReport` fields include:
+
+- `overshoot_ratio`
+- `energy_redistribution`
+- `invariant_residual` (`measured_overshoot_fraction - theoretical_gibbs_fraction`)
+- `jump_score`
+- `jump_active`
+
+Run the full evidence-first pipeline (Phase 2 + Phase 2b + Phase 3 + Phase 4):
+
+```bash
+python3 experiments/run_all.py
+```
+
+Primary outputs:
+
+- `results/invariant_residuals.csv`
+- `results/overshoot_profiles.json`
+- `results/energy_maps.npy`
+- `results/gates_report.json`
+- `results/constrained_metrics.json`
+- `results/candidate_ranking_report.json`
+
+Details: [Experiments v1](docs/experiments_v1.md)
+
+Run the interactive Gibbs Regime Switcher demo (hybrid story + live exploration):
+
+```bash
+python3 -m demo.app
+```
+
+Deterministic replay for scripted scenario runs:
+
+```bash
+python3 -m demo.replay --scenario noisy_discontinuity
+```
+
+Details: [Demo README](demo/README.md)
+
+---
+
 ## Repository Contents
 
 | Document | Description |
@@ -178,6 +231,9 @@ The exact table values may vary at the last displayed digit by platform/BLAS imp
 | [Theorem Applicability Comparison](docs/industry/theorem_applicability_comparison.md) | Comparison of when to use Theorem 1 versus Theorem 2 for analysis and system design decisions. |
 | [Theorem Role Summary](docs/industry/theorem_role_summary.md) | Short role summary: Theorem 2 for edge detection/regime switching, Theorem 1 for resolution/error budgeting. |
 | [GitHub Candidate Software List](docs/industry/github_candidate_software_list.md) | Curated list of GitHub software candidates for implementing and testing invariant-driven ideas. |
+| [Experiments v1](docs/experiments_v1.md) | Reproducible experiment suites, falsification gates, constrained prototype metrics, and artifact map. |
+| [Demo User Guide](docs/demo_user_guide.md) | Comprehensive operating guide for the Gibbs Regime Switcher demo with screenshots and workflows. |
+| [Candidate Ranking v1](docs/industry/candidate_ranking_v1.md) | Weighted shortlist and PoC target selection, gated by Phase 2b and Phase 3 pass criteria. |
 | [Industrial Implications Report (DOCX)](docs/industry/gibbs_industrial_implications.docx) | Editable DOCX version of the industrial implications report. |
 | [Industrial Implications Report (Markdown)](docs/industry/gibbs_industrial_implications.docx.md) | Markdown-exported version of the industrial implications report for review and version control. |
 | [Industrial Implications Report (PDF)](docs/industry/gibbs_industrial_implications.docx.pdf) | PDF export of the industrial implications report for distribution and presentation. |

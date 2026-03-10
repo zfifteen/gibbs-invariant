@@ -1,0 +1,46 @@
+{
+  "profiles": [
+    {
+      "N": 16,
+      "measured_delta": null,
+      "target_delta": 0.4412712003053032,
+      "delta_residual": null
+    },
+    {
+      "N": 32,
+      "measured_delta": null,
+      "target_delta": 0.4412712003053032,
+      "delta_residual": null
+    },
+    {
+      "N": 64,
+      "measured_delta": null,
+      "target_delta": 0.4412712003053032,
+      "delta_residual": null
+    },
+    {
+      "N": 128,
+      "measured_delta": null,
+      "target_delta": 0.4412712003053032,
+      "delta_residual": null
+    },
+    {
+      "N": 256,
+      "measured_delta": null,
+      "target_delta": 0.4412712003053032,
+      "delta_residual": null
+    },
+    {
+      "N": 512,
+      "measured_delta": null,
+      "target_delta": 0.4412712003053032,
+      "delta_residual": null
+    },
+    {
+      "N": 1024,
+      "measured_delta": null,
+      "target_delta": 0.4412712003053032,
+      "delta_residual": null
+    }
+  ]
+}

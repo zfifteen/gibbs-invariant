@@ -1,0 +1,21 @@
+{
+  "id": "n1_crossover",
+  "title": "N1 Crossover",
+  "signal_family": "square",
+  "snr_db": 80.0,
+  "jitter_fraction": 0.0,
+  "n_values": [8, 16, 24, 32],
+  "alpha": 1.0,
+  "jump_threshold": 0.2,
+  "cost_model": {
+    "edge_weight": 1.0,
+    "smooth_weight": 0.25
+  },
+  "script": [
+    {
+      "t_sec": 0.0,
+      "action": "set_scene",
+      "value": "n1_crossover"
+    }
+  ]
+}

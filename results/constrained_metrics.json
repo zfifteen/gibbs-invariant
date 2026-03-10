@@ -1,0 +1,58 @@
+{
+  "pass": true,
+  "lambda_weight": 0.35,
+  "smooth_tolerance": 0.02,
+  "task_pass_count": 1,
+  "max_smooth_regression": 0.008984470409808359,
+  "non_win_tasks": [
+    "denoising",
+    "truncated_fourier_reconstruction"
+  ],
+  "tasks": {
+    "denoising": {
+      "baseline_n": 32,
+      "baseline_beta": 0.0,
+      "constrained_n": 32,
+      "constrained_beta": 0.0,
+      "baseline_mse": 0.013863902246776322,
+      "constrained_mse": 0.013863902246776322,
+      "baseline_edge_mse": 0.14972162239000353,
+      "constrained_edge_mse": 0.14972162239000353,
+      "baseline_smooth_mse": 0.002194257144335809,
+      "constrained_smooth_mse": 0.002194257144335809,
+      "edge_improvement": 0.0,
+      "smooth_regression": 0.0,
+      "pass": false
+    },
+    "truncated_fourier_reconstruction": {
+      "baseline_n": 32,
+      "baseline_beta": 0.0,
+      "constrained_n": 8,
+      "constrained_beta": 0.0,
+      "baseline_mse": 0.01686948499029295,
+      "constrained_mse": 0.050399700526305366,
+      "baseline_edge_mse": 0.18977754666425842,
+      "constrained_edge_mse": 0.5090687208917575,
+      "baseline_smooth_mse": 0.00201736092285795,
+      "constrained_smooth_mse": 0.011001831332666308,
+      "edge_improvement": -0.3192911742274991,
+      "smooth_regression": 0.008984470409808359,
+      "pass": false
+    },
+    "edge_preserving_smoothing": {
+      "baseline_n": 48,
+      "baseline_beta": 0.0,
+      "constrained_n": 48,
+      "constrained_beta": 0.75,
+      "baseline_mse": 0.008870219194336787,
+      "constrained_mse": 0.003096184655453661,
+      "baseline_edge_mse": 0.10116467772101653,
+      "constrained_edge_mse": 0.028169475649210095,
+      "baseline_smooth_mse": 0.0009424873378563428,
+      "constrained_smooth_mse": 0.0009424873378563428,
+      "edge_improvement": 0.07299520207180643,
+      "smooth_regression": 0.0,
+      "pass": true
+    }
+  }
+}

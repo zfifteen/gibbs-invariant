@@ -1,0 +1,34 @@
+{
+  "weights": {
+    "fft_dependency": 0.35,
+    "spectral_processing_intensity": 0.25,
+    "discontinuity_frequency": 0.2,
+    "artifact_sensitivity": 0.2
+  },
+  "phase2b_pass": true,
+  "phase3_pass": true,
+  "shortlist": [
+    {
+      "name": "mozjpeg",
+      "repo_url": "https://github.com/mozilla/mozjpeg",
+      "score": 0.253
+    },
+    {
+      "name": "opensbli",
+      "repo_url": "https://github.com/opensbli/opensbli",
+      "score": 0.253
+    },
+    {
+      "name": "libwebp",
+      "repo_url": "https://github.com/webmproject/libwebp",
+      "score": 0.199
+    }
+  ],
+  "selected_target": {
+    "name": "mozjpeg",
+    "repo_url": "https://github.com/mozilla/mozjpeg",
+    "score": 0.253
+  },
+  "selection_unblocked": true,
+  "output_csv": "/Users/velocityworks/IdeaProjects/gibbs-invariant/results/candidate_rankings.csv"
+}

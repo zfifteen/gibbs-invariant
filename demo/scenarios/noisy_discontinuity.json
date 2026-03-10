@@ -1,0 +1,21 @@
+{
+  "id": "noisy_discontinuity",
+  "title": "Noise + Jitter Stress",
+  "signal_family": "noisy_discontinuity",
+  "snr_db": 15.0,
+  "jitter_fraction": 0.18,
+  "n_values": [16, 32, 64, 96],
+  "alpha": 1.0,
+  "jump_threshold": 0.2,
+  "cost_model": {
+    "edge_weight": 1.0,
+    "smooth_weight": 0.25
+  },
+  "script": [
+    {
+      "t_sec": 0.0,
+      "action": "set_scene",
+      "value": "noise_jitter_stress"
+    }
+  ]
+}

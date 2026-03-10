@@ -1,0 +1,33 @@
+{
+  "pass": true,
+  "metrics": {
+    "gibbs": {
+      "threshold": 0.24575395043640164,
+      "precision": 0.9807692307692307,
+      "recall": 1.0,
+      "f1": 0.9902912621359222,
+      "auroc": 1.0,
+      "prauc": 1.0
+    },
+    "tv": {
+      "threshold": 5.182048941548906,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "auroc": 1.0,
+      "prauc": 1.0
+    },
+    "wavelet": {
+      "threshold": 0.021191283598829585,
+      "precision": 0.4782608695652174,
+      "recall": 0.8627450980392157,
+      "f1": 0.6153846153846154,
+      "auroc": 0.6198479391756702,
+      "prauc": 0.6899328647628947
+    }
+  },
+  "measurable_win": true,
+  "non_win_cases": [
+    "smooth_65"
+  ]
+}
