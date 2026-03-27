@@ -39,6 +39,13 @@ class DemoEngineTest(unittest.TestCase):
         frame = analyze_signal(smooth, config=cfg)
         self.assertFalse(frame.jump_active)
 
+    def test_bandlimited_edge_scenario_is_closure_matched(self) -> None:
+        scenario = self.scenarios["bandlimited_edge"]
+        signal = generate_signal(scenario, t=0.0)
+        frame = analyze_signal(signal, config=scenario_to_config(scenario))
+        self.assertLess(frame.closure_ratio, 0.05)
+        self.assertFalse(frame.jump_active)
+
     def test_deterministic_replay_hash(self) -> None:
         scenario = self.scenarios["noisy_discontinuity"]
         hash_1 = compute_policy_timeline_hash(scenario, steps=12, duration_s=7.0)

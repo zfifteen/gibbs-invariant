@@ -74,6 +74,21 @@ def cumulative_radius_budget(radii: np.ndarray) -> np.ndarray:
     return np.cumsum(radii)
 
 
+def periodic_closure_gap(signal: np.ndarray) -> float:
+    values = np.asarray(signal, dtype=float)
+    if values.size < 2:
+        return 0.0
+    return float(abs(values[0] - values[-1]))
+
+
+def periodic_closure_ratio(signal: np.ndarray) -> float:
+    values = np.asarray(signal, dtype=float)
+    amplitude = float(np.max(values) - np.min(values)) if values.size else 0.0
+    if amplitude <= 1e-12:
+        return 0.0
+    return float(periodic_closure_gap(values) / amplitude)
+
+
 def radius_doubling_deltas(radii: np.ndarray, min_n: int = 8) -> List[float]:
     deltas: List[float] = []
     n = max(min_n, 1)

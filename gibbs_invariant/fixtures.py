@@ -31,7 +31,9 @@ def triangle_fixture(num_samples: int = 2048) -> np.ndarray:
 
 def bandlimited_edge_fixture(num_samples: int = 2048) -> np.ndarray:
     x = uniform_grid(num_samples)
-    smooth_edge = np.tanh(8.0 * x)
+    # Use a closure-matched smooth control so the periodic FFT model does not
+    # inherit a hidden wrap-around discontinuity at the domain boundary.
+    smooth_edge = np.tanh(8.0 * np.sin(x))
     ripple = 0.10 * np.sin(9.0 * x)
     return smooth_edge + ripple
 

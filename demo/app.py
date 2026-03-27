@@ -29,7 +29,7 @@ STORY_SCENES: Tuple[Dict[str, str], ...] = (
     {"label": "Invariant Convergence", "scenario_id": "invariant_convergence"},
     {"label": "N1 Crossover", "scenario_id": "n1_crossover"},
     {"label": "Noise/Jitter Stress", "scenario_id": "noisy_discontinuity"},
-    {"label": "Smooth Impostor Rejection", "scenario_id": "bandlimited_edge"},
+    {"label": "Closure-Matched Smooth Control", "scenario_id": "bandlimited_edge"},
     {"label": "Codec Routing Economics", "scenario_id": "step_function"},
     {"label": "Deployment Bridge (mozjpeg)", "scenario_id": "nonuniform_sampling"},
 )
@@ -112,7 +112,7 @@ def _build_reconstruction_figure(signal: np.ndarray, n_values: Tuple[int, ...]) 
     return fig
 
 
-def _build_regime_map(signal: np.ndarray, scenario: Mapping[str, Any]) -> go.Figure:
+def _build_regime_map(signal: np.ndarray, scenario: Mapping[str, Any], frame: Any) -> go.Figure:
     n_values = [int(v) for v in scenario["n_values"]]
     jump_scores: List[float] = []
     energy_vals: List[float] = []
@@ -152,6 +152,18 @@ def _build_regime_map(signal: np.ndarray, scenario: Mapping[str, Any]) -> go.Fig
         plot_bgcolor="rgba(3,13,24,0.55)",
         font={"family": "IBM Plex Mono, monospace", "color": "#dce6ff", "size": 11},
         legend={"orientation": "h", "yanchor": "bottom", "y": 1.02, "x": 0.0},
+        annotations=[
+            {
+                "x": 0.99,
+                "y": 1.16,
+                "xref": "paper",
+                "yref": "paper",
+                "xanchor": "right",
+                "showarrow": False,
+                "font": {"size": 12, "color": "#a9ffe2"},
+                "text": f"closure_ratio={frame.closure_ratio:.3f}",
+            }
+        ],
         xaxis={"title": "Harmonic Budget N", "showgrid": True, "gridcolor": "rgba(255,255,255,0.08)"},
         yaxis={"title": "Jump Score", "showgrid": True, "gridcolor": "rgba(255,255,255,0.08)"},
         yaxis2={
@@ -274,13 +286,13 @@ def _evidence_ledger(snapshot: ArtifactSnapshot | None, error: str | None) -> ht
 def _scene_caption(mode: str, scene_label: str, scenario: Mapping[str, Any], frame: Any, counter: Any, disruption_index: float) -> str:
     if mode == "story":
         return (
-            f"{scene_label} | jump_score={frame.jump_score:.3f} "
-            f"(threshold={frame.threshold_used:.3f}) | energy={frame.energy_redistribution:.3f} | "
+            f"{scene_label} | closure_ratio={frame.closure_ratio:.3f} | "
+            f"jump_score={frame.jump_score:.3f} (threshold={frame.threshold_used:.3f}) | energy={frame.energy_redistribution:.3f} | "
             f"quality_gain={counter.quality_gain:.5f} | speed_gain={counter.speed_gain:.2%} | "
             f"disruption_index={disruption_index:.1f}"
         )
     return (
-        f"Explore: {scenario['title']} | jump_active={frame.jump_active} | "
+        f"Explore: {scenario['title']} | closure_ratio={frame.closure_ratio:.3f} | jump_active={frame.jump_active} | "
         f"smooth_penalty={counter.smooth_penalty:.6f} | routed_cost={counter.routed_cost:.2f}"
     )
 
@@ -497,11 +509,12 @@ def create_app() -> dash.Dash:
         disruption_index = compute_disruption_index(counter)
 
         reconstruction = _build_reconstruction_figure(signal, n_values=tuple(cfg.n_values))
-        regime_map = _build_regime_map(signal, scenario=scenario)
+        regime_map = _build_regime_map(signal, scenario=scenario, frame=frame)
         counter_plot = _build_counterfactual_figure(counter, disruption_index)
         caption = _scene_caption(mode, scene_label, scenario, frame, counter, disruption_index)
         policy = html.Div(
             children=[
+                html.Div(f"closure_ratio: {frame.closure_ratio:.3f}"),
                 html.Div(f"edge_fraction: {counter.edge_fraction:.2%}"),
                 html.Div(f"mixed_fraction: {counter.mixed_fraction:.2%}"),
                 html.Div(f"smooth_fraction: {counter.smooth_fraction:.2%}"),

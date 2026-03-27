@@ -180,6 +180,8 @@ risk_report = risk(coefficients)
 
 - `overshoot_ratio`
 - `energy_redistribution`
+- `closure_gap`
+- `closure_ratio` (wrap-around mismatch under the periodic FFT model)
 - `invariant_residual` (`measured_overshoot_fraction - theoretical_gibbs_fraction`)
 - `jump_score`
 - `jump_active`

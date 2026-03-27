@@ -43,6 +43,8 @@ class RiskReport:
 class GibbsReport:
     overshoot_ratio: float
     energy_redistribution: float
+    closure_gap: float
+    closure_ratio: float
     invariant_residual: float
     jump_score: float
     jump_active: bool

@@ -14,11 +14,14 @@ class ApiTest(unittest.TestCase):
 
         self.assertIsInstance(report.overshoot_ratio, float)
         self.assertIsInstance(report.energy_redistribution, float)
+        self.assertIsInstance(report.closure_gap, float)
+        self.assertIsInstance(report.closure_ratio, float)
         self.assertIsInstance(report.invariant_residual, float)
         self.assertIsInstance(report.jump_score, float)
         self.assertIsInstance(report.jump_active, bool)
         self.assertGreaterEqual(report.energy_redistribution, 0.0)
         self.assertLessEqual(report.energy_redistribution, 1.0)
+        self.assertGreaterEqual(report.closure_ratio, 0.0)
 
     def test_risk_api(self) -> None:
         signal = square_wave_fixture(2048)

@@ -1,8 +1,8 @@
 {
   "id": "bandlimited_edge",
-  "title": "Smooth Impostor Rejection",
+  "title": "Closure-Matched Smooth Control",
   "signal_family": "bandlimited_edge",
-  "snr_db": 35.0,
+  "snr_db": 0.0,
   "jitter_fraction": 0.0,
   "n_values": [16, 32, 64, 96],
   "alpha": 1.0,
@@ -15,7 +15,7 @@
     {
       "t_sec": 0.0,
       "action": "set_scene",
-      "value": "smooth_impostor_rejection"
+      "value": "closure_matched_smooth_control"
     }
   ]
 }

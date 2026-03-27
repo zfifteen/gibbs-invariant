@@ -12,7 +12,7 @@ from typing import Any, Dict, Iterable, List, Mapping, MutableMapping, Sequence,
 
 import numpy as np
 
-from gibbs_invariant import GibbsConfig, detect_gibbs, risk
+from gibbs_invariant import GibbsConfig, detect_gibbs
 from gibbs_invariant.metrics import (
     add_gaussian_noise,
     compute_jump_indices,
@@ -58,6 +58,8 @@ class ArtifactSnapshot:
 class FrameMetrics:
     overshoot_ratio: float
     energy_redistribution: float
+    closure_gap: float
+    closure_ratio: float
     invariant_residual: float
     jump_score: float
     jump_active: bool
@@ -235,7 +237,7 @@ def generate_signal(scenario: Mapping[str, Any], t: float) -> np.ndarray:
         base = square_wave(x + phase)
     elif family == "bandlimited_edge":
         shifted = x + 0.20 * np.sin(phase)
-        base = np.tanh(8.0 * shifted) + 0.10 * np.sin(9.0 * shifted + 0.2 * t)
+        base = np.tanh(8.0 * np.sin(shifted)) + 0.10 * np.sin(9.0 * shifted + 0.2 * t)
     elif family == "noisy_discontinuity":
         base = np.where(x + 0.25 * np.sin(phase) < 0.0, -1.0, 1.0)
         snr_db = float(scenario.get("snr_db", 15.0))
@@ -284,20 +286,19 @@ def analyze_signal(signal: np.ndarray, config: GibbsConfig | Mapping[str, Any] |
     values = np.asarray(signal, dtype=float)
     cfg = _config_from_input(config)
     report = detect_gibbs(values, config=cfg)
-
-    coeff = np.abs(np.fft.rfft(values))[1:]
-    risk_report = risk(coefficients=coeff, config=cfg)
     n1 = estimate_crossover_harmonic(max_N=220)
 
     return FrameMetrics(
         overshoot_ratio=float(report.overshoot_ratio),
         energy_redistribution=float(report.energy_redistribution),
+        closure_gap=float(report.closure_gap),
+        closure_ratio=float(report.closure_ratio),
         invariant_residual=float(report.invariant_residual),
-        jump_score=float(risk_report.jump_score),
-        jump_active=bool(risk_report.jump_active),
+        jump_score=float(report.jump_score),
+        jump_active=bool(report.jump_active),
         radius_residual=float(report.radius_residual),
         energy_residual=float(report.energy_residual),
-        threshold_used=float(risk_report.threshold_used),
+        threshold_used=float(cfg.jump_threshold),
         estimated_crossover_n1=int(n1 if n1 is not None else -1),
     )
 
@@ -487,6 +488,7 @@ def simulate_policy_timeline(
                 "t_sec": round(t, 6),
                 "jump_score": round(frame.jump_score, 6),
                 "energy_redistribution": round(frame.energy_redistribution, 6),
+                "closure_ratio": round(frame.closure_ratio, 6),
                 "quality_gain": round(counter.quality_gain, 6),
                 "speed_gain": round(counter.speed_gain, 6),
                 "smooth_penalty": round(counter.smooth_penalty, 6),
@@ -514,7 +516,7 @@ def scene_order() -> Tuple[str, ...]:
         "Invariant Convergence",
         "N1 Crossover",
         "Noise/Jitter Stress",
-        "Smooth Impostor Rejection",
+        "Closure-Matched Smooth Control",
         "Codec Routing Economics",
         "Deployment Bridge (mozjpeg)",
     )

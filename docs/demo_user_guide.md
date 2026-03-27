@@ -82,7 +82,7 @@ When the app opens, Story mode is active and begins autoplay.
 1. Invariant Convergence
 2. N1 Crossover
 3. Noise/Jitter Stress
-4. Smooth Impostor Rejection
+4. Closure-Matched Smooth Control
 5. Codec Routing Economics
 6. Deployment Bridge (mozjpeg)
 
@@ -110,6 +110,8 @@ Recommended workflow:
 3. Pick a scenario (`noisy_discontinuity`, `bandlimited_edge`, `step_function`, etc.).
 4. Move time to inspect metric stability and routing behavior.
 
+`bandlimited_edge` is the closure-matched smooth control. It is useful as the "no hidden seam" comparison against the discontinuous scenarios.
+
 ---
 
 ## 6. Reading Each Panel
@@ -125,12 +127,13 @@ Use it to answer:
 
 ## Regime Map
 
-Shows jump score and energy redistribution versus harmonic budget.
+Shows jump score and energy redistribution versus harmonic budget, with a closure-ratio annotation for the current signal.
 
 Use it to answer:
 
 - Is jump behavior consistently above threshold?
 - How stable is energy concentration as N changes?
+- Does the periodic wrap-around close cleanly, or is there a boundary seam the FFT will treat as a jump?
 
 ## Counterfactual Scoreboard
 
@@ -209,7 +212,7 @@ Replay output includes:
 1. Launch: `./scripts/run_demo.sh`
 2. Watch one full Story cycle.
 3. Pause and Step through scenes 3, 4, and 5.
-4. Switch to Explore and compare `bandlimited_edge` vs `noisy_discontinuity`.
+4. Switch to Explore and compare `bandlimited_edge` (closure-matched smooth control) vs `noisy_discontinuity`.
 5. Check that Evidence Ledger is green for current artifacts.
 6. Use replay command for a deterministic record.
 

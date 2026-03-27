@@ -13,6 +13,8 @@ from .metrics import (
     energy_concentration_from_reconstruction,
     fft_partial_sum,
     measured_overshoot_fraction,
+    periodic_closure_gap,
+    periodic_closure_ratio,
     radius_doubling_deltas,
 )
 from .types import GibbsConfig, GibbsReport, RiskReport
@@ -83,6 +85,8 @@ def detect_gibbs(signal: np.ndarray, config: Optional[GibbsConfig] = None) -> Gi
     coeff = np.abs(np.fft.rfft(processed))[1:]
     risk_report = risk(coefficients=coeff, config=cfg)
 
+    closure_gap = periodic_closure_gap(processed)
+    closure_ratio = periodic_closure_ratio(processed)
     invariant_residual = overshoot_ratio - GIBBS_OVERSHOOT_FRACTION_JUMP
     radius_residual = risk_report.jump_score - GIBBS_RADIUS_DELTA
     energy_residual = energy_redistribution - 0.89
@@ -90,6 +94,8 @@ def detect_gibbs(signal: np.ndarray, config: Optional[GibbsConfig] = None) -> Gi
     return GibbsReport(
         overshoot_ratio=float(overshoot_ratio),
         energy_redistribution=float(energy_redistribution),
+        closure_gap=float(closure_gap),
+        closure_ratio=float(closure_ratio),
         invariant_residual=float(invariant_residual),
         jump_score=float(risk_report.jump_score),
         jump_active=bool(risk_report.jump_active),

@@ -7,6 +7,9 @@ import json
 from pathlib import Path
 from typing import Callable, Dict, Iterable, List, Sequence, Tuple
 
+import matplotlib
+
+matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
 
