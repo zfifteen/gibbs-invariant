@@ -9,7 +9,8 @@ authors:
 repository-code: "https://github.com/zfifteen/gibbs-invariant"
 url: "https://github.com/zfifteen/gibbs-invariant"
 license: "MIT"
-version: "v0.1.0"
+version: "v0.1.1"
+doi: "10.5281/zenodo.18869128"
 date-released: "2026-03-04"
 keywords:
   - Fourier analysis
@@ -25,5 +26,6 @@ preferred-citation:
       given-names: "Dionisio Alberto"
       name-suffix: "III"
   year: 2026
-  version: "v0.1.0"
+  version: "v0.1.1"
+  doi: "10.5281/zenodo.18869128"
   url: "https://github.com/zfifteen/gibbs-invariant"
