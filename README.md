@@ -22,6 +22,8 @@ In short:
 
 These invariants provide two quantitative diagnostics for deciding when global spectral refinement stops being efficient and discontinuity-aware treatment is warranted.
 
+Read together, they say something stronger than "detect the jump" and "budget the error." In the Fourier setting treated here, they impose a coupled lower bound on the cost of leaving a discontinuity implicit inside a single global uniform representation. Theorem 1 says a stable share of the residual `L²` error remains trapped near the jump. Theorem 2 says the coefficient-magnitude budget required by that same representation grows logarithmically and retains a nonzero per-doubling increment. Those penalties are coupled rather than interchangeable: more global terms do not make both disappear. For the canonical square wave, `N₁ ≈ 26` is the crossover where the discontinuity-controlled part of the error budget overtakes further smooth-region RMS reduction.
+
 Common engineering heuristics can be interpreted through this lens:
 
 | Domain | The Heuristic Workaround |

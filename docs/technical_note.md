@@ -13,6 +13,8 @@ This note presents two linked, falsifiable invariants for Fourier partial sums o
 
 Together the two invariants yield a crossover criterion: for the unit square wave, pointwise Gibbs error exceeds global RMS error at \(N_1 \approx 26\). They also provide an operational decision rule: persistent \(\Delta R > 0.2\) past \(N\approx 50\) indicates true jump discontinuities. Both invariants are verified numerically for \(N=10\) through \(N=2{,}000\) with explicit falsification criteria. Single-command regeneration via `python3 gibbs_invariant.py` reproduces all figures and verification tables.
 
+Read together, the invariants do more than furnish diagnostics. For the equispaced Fourier setting studied here, they bound the representational cost of leaving a discontinuity implicit in a single global expansion: an \(N\)-stable fraction of residual energy remains localized near jumps while the cumulative coefficient-magnitude budget grows as \(A\ln N\). These costs cannot both be driven away by further uniform spectral refinement. In this sense, \(N_1\) marks the square-wave-calibrated crossover at which discontinuity-controlled cost overtakes smooth-region RMS reduction.
+
 ---
 
 ## 1. Introduction
@@ -27,6 +29,8 @@ What is new here is the identification of two linked, falsifiable invariants tha
 2. **Theorem 2 (Radius Budget):** The cumulative Fourier coefficient magnitude diverges logarithmically for jump signals, with a closed-form per-doubling constant.
 
 Together they provide a two-stage diagnostic: Theorem 2 detects the presence of jumps; Theorem 1 quantifies the resulting error allocation. This note treats the canonical piecewise-smooth case: the unit square wave as the primary example, with sawtooth (discontinuous control) and triangle wave (continuous control) for validation.
+
+There is a stronger structural reading of the pair. Theorem 1 constrains the residual-error side of the problem: once a true jump is present, a stable portion of the remaining \(L^2\) error is forced into shrinking edge neighborhoods. Theorem 2 constrains the representation side: the coefficient-magnitude budget needed to sustain the same global Fourier description grows logarithmically and keeps a nonzero doubling increment. For the signal class treated here, these are two projections of the same underlying fact: a jump cannot be kept implicit inside one global uniform Fourier basis without paying simultaneously in localized error concentration and in persistent coefficient-budget growth.
 
 ---
 
